@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulos Interactivos de Teledetección</title>
+    <style>
+        /* --- Estilos Generales --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            background-color: #e9f2fa;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+
+        /* --- Estilos del Acordeón Interactivo --- */
+        .collapsible {
+            background-color: #f8f9fa;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .active, .collapsible:hover {
+            background-color: #e2eef7;
+        }
+
+        .collapsible:after {
+            content: '\\002B'; /* Símbolo '+' */
+            color: #0056b3;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+
+        .active:after {
+            content: "\\2212"; /* Símbolo '−' */
+        }
+
+        .content {
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+            border-left: 3px solid #007bff;
+            margin-bottom: 5px;
+        }
+
+        .content p {
+            margin-top: 15px;
+        }
+
+        /* --- Estilos del Mini-Quiz --- */
+        .interactive-quiz {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+            border: 1px solid #cce5ff;
+        }
+
+        .question {
+            font-weight: bold;
+            color: #004085;
+        }
+
+        .options label {
+            display: block;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+
+        .quiz-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .quiz-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .correct {
+            color: #155724;
+        }
+
+        .incorrect {
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Módulos de Aprendizaje Interactivo en Teledetección</h1>
+        <p>¡Bienvenido! Haz clic en cada tema para expandir la información y poner a prueba tus conocimientos con un mini-quiz.</p>
+
+        <!-- MÓDULO 1: Teledetección y Fundamentos -->
+        <h2>1. Teledetección y Fundamentos</h2>
+        <button class="collapsible">Teledetección</button>
+        <div class="content">
+            <p>Es la ciencia y el arte de obtener información sobre un objeto o fenómeno sin estar en contacto físico con él, analizando la radiación electromagnética que emite o refleja.</p>
+            <div class="interactive-quiz">
+                <p class="question">¿Cuál es el principio fundamental de la teledetección?</p>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="incorrect"> Analizar muestras físicas en un laboratorio.</label>
+                    <label><input type="radio" name="q1" value="correct"> Adquirir información a distancia, sin contacto directo.</label>
+                    <label><input type="radio" name="q1" value="incorrect"> Crear mapas usando únicamente mediciones en campo.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+        
+        <button class="collapsible">Radiación electromagnética (REM)</button>
+        <div class="content">
+            <p>Es la energía que se propaga en forma de ondas a través del espacio. La teledetección mide la REM que interactúa con la superficie terrestre. Incluye desde los rayos gamma hasta las ondas de radio.</p>
+            <div class="interactive-quiz">
+                <p class="question">¿Qué tipo de energía es la base de la mayoría de los sistemas de teledetección?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="correct"> Radiación electromagnética.</label>
+                    <label><input type="radio" name="q2" value="incorrect"> Energía cinética.</label>
+                    <label><input type="radio" name="q2" value="incorrect"> Energía sonora.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Sensor Remoto</button>
+        <div class="content">
+            <p>Es el dispositivo que detecta y registra la radiación electromagnética proveniente de la superficie terrestre. Cada sensor está diseñado para ser sensible a regiones específicas del espectro electromagnético.</p>
+             <div class="interactive-quiz">
+                <p class="question">¿Cuál es la función principal de un sensor remoto?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="incorrect"> Propulsar la plataforma satelital.</label>
+                    <label><input type="radio" name="q3" value="correct"> Detectar y registrar energía electromagnética.</label>
+                    <label><input type="radio" name="q3" value="incorrect"> Almacenar los datos en la Tierra.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Plataforma</button>
+        <div class="content">
+            <p>Es el vehículo que transporta el sensor remoto. Puede ser un satélite, un avión, un dron (UAV) o un globo estratosférico.</p>
+             <div class="interactive-quiz">
+                <p class="question">Un dron (UAV) que lleva una cámara multiespectral es un ejemplo de:</p>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="correct"> Una plataforma.</label>
+                    <label><input type="radio" name="q4" value="incorrect"> Un sensor activo.</label>
+                    <label><input type="radio" name="q4" value="incorrect"> Una resolución temporal.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Resolución (espacial, espectral, temporal, radiométrica)</button>
+        <div class="content">
+            <p><strong>Espacial:</strong> El tamaño mínimo de un objeto que puede ser distinguido en una imagen (ej. 10m x 10m).<br>
+               <strong>Espectral:</strong> La capacidad del sensor para distinguir entre diferentes longitudes de onda. Se refiere al número y anchura de las bandas.<br>
+               <strong>Temporal:</strong> El tiempo que tarda un satélite en volver a observar el mismo punto de la Tierra (revisita).<br>
+               <strong>Radiométrica:</strong> La capacidad del sensor para distinguir diferentes niveles de intensidad de energía (bits por píxel, ej. 8-bit, 12-bit).</p>
+             <div class="interactive-quiz">
+                <p class="question">Si un satélite captura una imagen del mismo lugar cada 5 días, ¿a qué resolución nos referimos?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="incorrect"> Espacial.</label>
+                    <label><input type="radio" name="q5" value="incorrect"> Espectral.</label>
+                    <label><input type="radio" name="q5" value="correct"> Temporal.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Reflectancia, Radiancia, Irradiancia</button>
+        <div class="content">
+            <p><strong>Irradiancia:</strong> La cantidad de energía electromagnética que llega a una superficie.<br>
+               <strong>Radiancia:</strong> La cantidad de energía que es reflejada o emitida por esa superficie en una dirección específica, medida por el sensor.<br>
+               <strong>Reflectancia:</strong> La proporción (ratio) de la energía reflejada respecto a la energía incidente (irradiancia). Es un valor sin unidades (0 a 1) y es fundamental para comparar imágenes tomadas en diferentes condiciones de iluminación.</p>
+             <div class="interactive-quiz">
+                <p class="question">¿Qué medida es más útil para comparar la vegetación en imágenes tomadas en días diferentes (uno soleado y otro nublado)?</p>
+                <div class="options">
+                    <label><input type="radio" name="q6" value="correct"> Reflectancia.</label>
+                    <label><input type="radio" name="q6" value="incorrect"> Radiancia.</label>
+                    <label><input type="radio" name="q6" value="incorrect"> Irradiancia.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+        
+        <!-- ... (Más subtemas del Módulo 1 se añadirían aquí de la misma forma) ... -->
+
+        <!-- MÓDULO 2: Tipos de Sensores y Plataformas -->
+        <h2>2. Tipos de Sensores y Plataformas</h2>
+        <button class="collapsible">Sensor Pasivo vs. Activo</button>
+        <div class="content">
+            <p><strong>Sensor Pasivo:</strong> Mide la energía natural reflejada (luz solar) o emitida (calor) por la superficie. Ejemplos: cámaras fotográficas, sensores multiespectrales como Landsat o Sentinel-2.<br>
+               <strong>Sensor Activo:</strong> Emite su propia fuente de energía y mide la señal que regresa tras interactuar con la superficie. Puede operar de día y de noche y atravesar nubes. Ejemplos: Radar (SAR) y LiDAR.</p>
+             <div class="interactive-quiz">
+                <p class="question">Un sensor LiDAR, que emite un pulso láser para medir distancias, es un tipo de sensor:</p>
+                <div class="options">
+                    <label><input type="radio" name="q7" value="incorrect"> Pasivo.</label>
+                    <label><input type="radio" name="q7" value="correct"> Activo.</label>
+                    <label><input type="radio" name="q7" value="incorrect"> Térmico.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+        
+        <button class="collapsible">Multiespectral vs. Hiperespectral</button>
+        <div class="content">
+            <p><strong>Multiespectral:</strong> Captura datos en un pequeño número de bandas espectrales anchas y discretas (ej. 3 a 15 bandas como Sentinel-2).<br>
+               <strong>Hiperespectral:</strong> Captura datos en cientos de bandas espectrales muy estrechas y contiguas, creando una firma espectral casi continua. Permite una identificación de materiales mucho más detallada.</p>
+             <div class="interactive-quiz">
+                <p class="question">¿Qué tipo de sensor es más adecuado para diferenciar especies de plantas muy similares?</p>
+                <div class="options">
+                    <label><input type="radio" name="q8" value="incorrect"> Multiespectral.</label>
+                    <label><input type="radio" name="q8" value="correct"> Hiperespectral.</label>
+                    <label><input type="radio" name="q8" value="incorrect"> Pancromático.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Radar (SAR) y LiDAR</button>
+        <div class="content">
+            <p><strong>Radar (SAR - Synthetic Aperture Radar):</strong> Sensor activo que emite microondas. Es ideal para monitorear a través de nubes, de noche, y para medir deformaciones de la superficie, humedad del suelo y estructuras verticales.<br>
+               <strong>LiDAR (Light Detection and Ranging):</strong> Sensor activo que emite pulsos de luz láser. Es extremadamente preciso para crear modelos digitales de elevación (DEM) y estudiar la estructura tridimensional de los bosques.</p>
+            <div class="interactive-quiz">
+                <p class="question">Para crear un modelo 3D muy detallado de la copa de los árboles en un bosque, ¿qué tecnología sería la más apropiada?</p>
+                <div class="options">
+                    <label><input type="radio" name="q9" value="correct"> LiDAR.</label>
+                    <label><input type="radio" name="q9" value="incorrect"> Sensor térmico.</label>
+                    <label><input type="radio" name="q9" value="incorrect"> Sentinel-2.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Sentinel-2, Landsat, MODIS</button>
+        <div class="content">
+            <p>Son tres de las misiones satelitales más importantes para el monitoreo terrestre:<br>
+               <strong>Sentinel-2 (ESA):</strong> Alta resolución espacial (10m, 20m, 60m), alta resolución temporal (5 días con 2 satélites) y 13 bandas multiespectrales. Ideal para agricultura y vegetación.<br>
+               <strong>Landsat (NASA/USGS):</strong> El programa de observación terrestre más largo (desde 1972). Resolución espacial de 30m y temporal de 16 días. Fundamental para estudios de cambio a largo plazo.<br>
+               <strong>MODIS (NASA):</strong> Baja resolución espacial (250m a 1km) pero altísima resolución temporal (observaciones diarias globales). Perfecto para monitoreo de fenómenos a gran escala como incendios, inundaciones y clima.</p>
+             <div class="interactive-quiz">
+                <p class="question">Si necesitas monitorear la deforestación en el Amazonas durante los últimos 40 años, ¿qué programa satelital sería tu principal fuente de datos históricos?</p>
+                <div class="options">
+                    <label><input type="radio" name="q10" value="incorrect"> Sentinel-2.</label>
+                    <label><input type="radio" name="q10" value="correct"> Landsat.</label>
+                    <label><input type="radio" name="q10" value="incorrect"> PlanetScope.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <!-- MÓDULO 3: Aplicaciones -->
+        <h2>3. Aplicaciones</h2>
+        <button class="collapsible">Agricultura de Precisión</button>
+        <div class="content">
+            <p>Uso de la teledetección (especialmente con drones y satélites de alta resolución) para monitorear la salud de los cultivos, detectar estrés hídrico o de nutrientes, y aplicar insumos (agua, fertilizantes) de manera localizada y eficiente.</p>
+            <div class="interactive-quiz">
+                <p class="question">En agricultura de precisión, un mapa de NDVI ayuda principalmente a:</p>
+                <div class="options">
+                    <label><input type="radio" name="q11" value="incorrect"> Contar el número de plantas.</label>
+                    <label><input type="radio" name="q11" value="correct"> Identificar zonas con diferente vigor o salud vegetal.</label>
+                    <label><input type="radio" name="q11" value="incorrect"> Medir la altura de los cultivos.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">NDVI, NDRE, SAVI, NDWI (Índices)</button>
+        <div class="content">
+            <p>Son combinaciones matemáticas de diferentes bandas espectrales para resaltar una característica específica:<br>
+               <strong>NDVI (Índice de Vegetación de Diferencia Normalizada):</strong> Usa las bandas Roja y NIR para medir la cantidad y vigor de la vegetación. Es el más común.<br>
+               <strong>NDRE (Índice de Diferencia Normalizada de Borde Rojo):</strong> Usa las bandas Borde Rojo (RedEdge) y NIR. Es más sensible que el NDVI en vegetación densa o en etapas tardías de crecimiento.<br>
+               <strong>SAVI (Índice de Vegetación Ajustado al Suelo):</strong> Similar al NDVI, pero incluye un factor de corrección para minimizar la influencia del brillo del suelo en áreas con vegetación escasa.<br>
+               <strong>NDWI (Índice de Agua de Diferencia Normalizada):</strong> Usa las bandas Verde y NIR (o SWIR en otras versiones) para delimitar cuerpos de agua y medir la humedad de la vegetación.</p>
+            <div class="interactive-quiz">
+                <p class="question">Para delinear claramente los lagos y ríos en una imagen de Sentinel-2, ¿qué índice sería el más indicado?</p>
+                <div class="options">
+                    <label><input type="radio" name="q12" value="incorrect"> NDVI.</label>
+                    <label><input type="radio" name="q12" value="incorrect"> SAVI.</label>
+                    <label><input type="radio" name="q12" value="correct"> NDWI.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+        
+        <!-- ... (Más aplicaciones se añadirían aquí) ... -->
+
+        <!-- MÓDULO 4: Procesamiento de Datos -->
+        <h2>4. Procesamiento de Datos</h2>
+        <button class="collapsible">Corrección (radiométrica, atmosférica, geométrica)</button>
+        <div class="content">
+            <p>Son pasos esenciales para convertir los datos crudos del sensor en información científicamente válida:<br>
+               <strong>Corrección Geométrica:</strong> Corrige las distorsiones en la imagen causadas por la curvatura de la Tierra, la topografía y el movimiento del sensor, para que cada píxel corresponda a una ubicación geográfica precisa (ortorrectificación).<br>
+               <strong>Corrección Radiométrica:</strong> Convierte los valores digitales (DN) a unidades físicas como la radiancia. Corrige errores del sensor.<br>
+               <strong>Corrección Atmosférica:</strong> Elimina los efectos de la atmósfera (dispersión y absorción), que alteran la señal que llega al sensor. Este paso es crucial para convertir la radiancia en reflectancia de superficie.</p>
+            <div class="interactive-quiz">
+                <p class="question">¿Qué corrección es necesaria para convertir los valores de radiancia a reflectancia de superficie?</p>
+                <div class="options">
+                    <label><input type="radio" name="q13" value="incorrect"> Geométrica.</label>
+                    <label><input type="radio" name="q13" value="correct"> Atmosférica.</label>
+                    <label><input type="radio" name="q13" value="incorrect"> Del sensor.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Firma Espectral y Curvas de Reflectancia</button>
+        <div class="content">
+            <p>La <strong>firma espectral</strong> es el patrón único de reflectancia, absorción, transmisión y emisión de energía electromagnética de un material a través de diferentes longitudes de onda. Se representa gráficamente mediante una <strong>curva de reflectancia</strong>. Por ejemplo, la vegetación sana tiene una firma característica con baja reflectancia en el visible (por la clorofila) y una alta reflectancia en el Infrarrojo Cercano (NIR).</p>
+            <div class="interactive-quiz">
+                <p class="question">Una alta reflectancia en el infrarrojo cercano (NIR) es una característica clave en la firma espectral de:</p>
+                <div class="options">
+                    <label><input type="radio" name="q14" value="incorrect"> Agua limpia.</label>
+                    <label><input type="radio" name="q14" value="correct"> Vegetación sana.</label>
+                    <label><input type="radio" name="q14" value="incorrect"> Suelo urbano.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Machine Learning (ML) y Modelos Predictivos</button>
+        <div class="content">
+            <p>El Machine Learning se usa ampliamente en teledetección para tareas como la clasificación de coberturas del suelo (ej. identificar bosques, ciudades, agua), la detección de objetos, y la creación de modelos predictivos (ej. predecir el rendimiento de un cultivo basándose en datos multitemporales). Algoritmos como Random Forest, Support Vector Machines (SVM) y redes neuronales son comunes.</p>
+             <div class="interactive-quiz">
+                <p class="question">¿Para qué se utilizaría un algoritmo de Machine Learning como Random Forest en teledetección?</p>
+                <div class="options">
+                    <label><input type="radio" name="q15" value="incorrect"> Para la corrección atmosférica de una imagen.</label>
+                    <label><input type="radio" name="q15" value="correct"> Para clasificar los píxeles de una imagen en categorías como 'bosque', 'agua', 'urbano'.</label>
+                    <label><input type="radio" name="q15" value="incorrect"> Para convertir datos DN a radiancia.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+        
+        <!-- ... (Más temas de procesamiento) ... -->
+
+        <!-- MÓDULO 5: Espectro Electromagnético -->
+        <h2>5. Espectro Electromagnético</h2>
+        <button class="collapsible">Regiones clave: Visible, NIR, RedEdge, SWIR</button>
+        <div class="content">
+            <p>Son las regiones del espectro más utilizadas en teledetección para estudios de vegetación y suelo:<br>
+            <strong>Luz Visible (RGB):</strong> Lo que ve el ojo humano. Sensible a los pigmentos de las plantas (clorofila).<br>
+            <strong>Infrarrojo Cercano (NIR):</strong> Muy sensible a la estructura celular de las hojas. La vegetación sana refleja fuertemente el NIR.<br>
+            <strong>Borde Rojo (RedEdge):</strong> Es la región de transición abrupta entre la absorción del Rojo y la alta reflectancia del NIR. Es un indicador sensible del estrés y contenido de clorofila.<br>
+            <strong>Infrarrojo de Onda Corta (SWIR):</strong> Sensible al contenido de agua en las hojas y el suelo, así como a la composición mineralógica.</p>
+             <div class="interactive-quiz">
+                <p class="question">Para detectar estrés hídrico en plantas, ¿qué región del espectro, además del NIR, sería particularmente útil?</p>
+                <div class="options">
+                    <label><input type="radio" name="q16" value="correct"> Infrarrojo de Onda Corta (SWIR).</label>
+                    <label><input type="radio" name="q16" value="incorrect"> Luz visible (Azul).</label>
+                    <label><input type="radio" name="q16" value="incorrect"> Microondas.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <!-- MÓDULO 6: Instrumentos y Tecnología -->
+        <h2>6. Instrumentos y Tecnología</h2>
+        <button class="collapsible">Espectrómetro portátil vs. Radiómetro multiespectral</button>
+        <div class="content">
+            <p><strong>Espectrómetro portátil (o espectrorradiómetro):</strong> Instrumento de campo que mide la energía en cientos o miles de bandas muy estrechas y contiguas. Se usa para obtener firmas espectrales de referencia muy detalladas de objetos específicos (una hoja, una roca) para calibrar o validar datos de sensores aéreos o satelitales.<br>
+            <strong>Radiómetro multiespectral:</strong> Instrumento que mide la energía en unas pocas bandas anchas, similares a las de un sensor satelital o de dron. Puede ser de campo o estar a bordo de una plataforma.</p>
+            <div class="interactive-quiz">
+                <p class="question">Si quieres obtener la curva de reflectancia completa y detallada de una hoja específica en el campo, ¿qué instrumento usarías?</p>
+                <div class="options">
+                    <label><input type="radio" name="q17" value="correct"> Espectrómetro portátil.</label>
+                    <label><input type="radio" name="q17" value="incorrect"> Cámara RGB de un dron.</label>
+                    <label><input type="radio" name="q17" value="incorrect"> Un sensor LiDAR.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <!-- MÓDULO 7: Software y Plataformas -->
+        <h2>7. Software y Plataformas</h2>
+        <button class="collapsible">QGIS y SNAP</button>
+        <div class="content">
+            <p>Son dos de los programas de software de escritorio de código abierto más importantes para teledetección:<br>
+            <strong>QGIS:</strong> Un Sistema de Información Geográfica (SIG) muy completo y versátil. Excelente para visualizar, gestionar y analizar datos geoespaciales, incluyendo imágenes de satélite. Se le pueden añadir plugins específicos para teledetección, como el Semi-Automatic Classification Plugin.<br>
+            <strong>SNAP (Sentinel Application Platform):</strong> Desarrollado por la ESA, es un software específicamente diseñado para el procesamiento y análisis de datos de misiones satelitales, especialmente las de la familia Sentinel. Incluye herramientas avanzadas para correcciones, análisis de radar (SAR), etc.</p>
+             <div class="interactive-quiz">
+                <p class="question">Si tu tarea principal es procesar imágenes de radar de Sentinel-1, ¿qué software especializado sería la mejor opción?</p>
+                <div class="options">
+                    <label><input type="radio" name="q18" value="incorrect"> QGIS.</label>
+                    <label><input type="radio" name="q18" value="correct"> SNAP.</label>
+                    <label><input type="radio" name="q18" value="incorrect"> Google Earth.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+        
+        <button class="collapsible">Google Earth Engine (GEE)</button>
+        <div class="content">
+            <p>Es una plataforma en la nube para el análisis de datos geoespaciales a escala planetaria. Combina un catálogo masivo de datos satelitales (Landsat, Sentinel, MODIS, etc.) con potentes capacidades de computación. Permite procesar y analizar enormes cantidades de imágenes sin necesidad de descargarlas, utilizando APIs de JavaScript o Python.</p>
+             <div class="interactive-quiz">
+                <p class="question">¿Cuál es la principal ventaja de usar Google Earth Engine?</p>
+                <div class="options">
+                    <label><input type="radio" name="q19" value="incorrect"> Funciona sin conexión a internet.</label>
+                    <label><input type="radio" name="q19" value="correct"> Permite analizar grandes volúmenes de datos satelitales en la nube sin descargarlos.</label>
+                    <label><input type="radio" name="q19" value="incorrect"> Es el mejor software para crear modelos 3D detallados.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+        <button class="collapsible">Python en Teledetección</button>
+        <div class="content">
+            <p>Python se ha convertido en el lenguaje de programación de facto para el análisis de datos geoespaciales gracias a su ecosistema de librerías potentes y de código abierto. Librerías como <strong>Rasterio</strong> y <strong>GDAL</strong> para leer y escribir datos raster, <strong>GeoPandas</strong> para datos vectoriales, <strong>Scikit-learn</strong> para Machine Learning, y <strong>Matplotlib</strong> para visualización, lo hacen una herramienta indispensable para automatizar flujos de trabajo y realizar análisis complejos.</p>
+             <div class="interactive-quiz">
+                <p class="question">¿Qué librería de Python usarías específicamente para aplicar un modelo de Machine Learning (como Random Forest) a tus datos de imagen?</p>
+                <div class="options">
+                    <label><input type="radio" name="q20" value="incorrect"> Rasterio.</label>
+                    <label><input type="radio" name="q20" value="correct"> Scikit-learn.</label>
+                    <label><input type="radio" name="q20" value="incorrect"> Matplotlib.</label>
+                </div>
+                <button class="quiz-btn">Verificar</button>
+                <p class="feedback"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Lógica del Acordeón ---
+        const collapsibles = document.getElementsByClassName("collapsible");
+        for (let i = 0; i < collapsibles.length; i++) {
+            collapsibles[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
+
+        // --- Lógica de los Quizzes ---
+        const quizBtns = document.querySelectorAll('.quiz-btn');
+        quizBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const quizContainer = this.closest('.interactive-quiz');
+                const selectedOption = quizContainer.querySelector('input[type="radio"]:checked');
+                const feedbackEl = quizContainer.querySelector('.feedback');
+
+                if (!selectedOption) {
+                    feedbackEl.textContent = "Por favor, selecciona una respuesta.";
+                    feedbackEl.className = 'feedback incorrect';
+                    return;
+                }
+
+                if (selectedOption.value === 'correct') {
+                    feedbackEl.textContent = "¡Correcto! Muy bien.";
+                    feedbackEl.className = 'feedback correct';
+                } else {
+                    feedbackEl.textContent = "Incorrecto. Inténtalo de nuevo.";
+                    feedbackEl.className = 'feedback incorrect';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

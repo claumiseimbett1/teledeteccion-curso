@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Sensores Ópticos Pasivos</title>
+    <!-- Incluir jsPDF desde CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="search"],
+        input[type="tel"],
+        input[type="url"],
+        textarea {
+            font-size: 16px;
+        }
+
+
+        #user-info-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 71, 171, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #user-info-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #user-info-screen h2 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 1.7em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        #user-info-screen h1 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 2em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        #user-info-screen p {
+            color: #e0e0e0;
+            margin-bottom: 25px;
+            text-align: center;
+            max-width: 90%;
+            font-size: 1em;
+        }
+
+        #user-info-form {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        #user-info-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1em;
+        }
+
+        #user-info-form input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #user-info-form input[type="text"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            outline: none;
+        }
+
+
+        #start-quiz-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        #start-quiz-button:hover {
+            background-color: #218838;
+        }
+        #start-quiz-button:active {
+            transform: translateY(1px);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: -15px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            width: 95%;
+            max-width: 850px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            box-sizing: border-box;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        #logo-container {
+            width: 120px;
+            max-width: 150px;
+            margin: 0 auto 15px auto;
+            overflow: hidden;
+        }
+
+        #logo-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+
+        .quiz-header h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.8em;
+        }
+        .quiz-header p {
+            font-size: 1em;
+            color: #555;
+        }
+
+
+        .section-title {
+            font-size: 1.4em;
+            color: #0056b3;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 6px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #fdfdff;
+            border-left: 5px solid #007bff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s, border-color 0.2s;
+            border: 1px solid #e0e0e0;
+            background-color: #fff;
+        }
+
+        .options label:hover {
+            background-color: #f0f8ff;
+            border-color: #b3d7ff;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+            vertical-align: middle;
+            transform: scale(1);
+        }
+
+        .correct-answer {
+            color: #155724;
+            font-weight: bold;
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+        }
+
+        .incorrect-answer {
+            color: #721c24;
+            font-weight: bold;
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+        }
+
+        .user-selected.incorrect-answer {
+             text-decoration: line-through;
+        }
+
+        #submit-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        #submit-button:hover {
+            background-color: #0056b3;
+        }
+        #submit-button:active {
+            transform: translateY(1px);
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f9ff;
+            border-radius: 8px;
+            font-size: 1.1em;
+            text-align: center;
+            border: 1px solid #b3d7ff;
+        }
+        #results.hidden {
+            display: none;
+        }
+        #results p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        #results strong {
+            color: #0056b3;
+        }
+        #email-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        #email-link:hover {
+            background-color: #218838;
+        }
+         #email-link:active {
+            transform: translateY(1px);
+        }
+        .pdf-info {
+            font-style: italic;
+            color: #555;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+
+        @media (min-width: 600px) {
+            #user-info-screen h2 { font-size: 1.8em; }
+            #user-info-screen h1 { font-size: 2.2em; }
+            #user-info-screen p { font-size: 1.1em; max-width: 450px; }
+            #user-info-form { padding: 35px; width: 100%; max-width: 420px;}
+            #start-quiz-button { font-size: 1.2em; }
+            .quiz-container { padding: 25px; margin: 30px auto; width: 95%;}
+            #logo-container { width: 150px; margin-bottom: 20px; }
+            .quiz-header h1 { font-size: 2em; }
+            .quiz-header p { font-size: 1.1em; }
+            .section-title { font-size: 1.6em; }
+            .question-block { padding: 20px; border-left-width: 6px; }
+            .question-text { font-size: 1.1em; }
+            .options label { padding: 12px; }
+            .options input[type="radio"] { transform: scale(1.1); }
+            #submit-button { padding: 15px; font-size: 1.3em; }
+            #results { padding: 25px; font-size: 1.2em; }
+            #email-link { padding: 12px 25px; font-size: 1.05em; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="user-info-screen">
+        <form id="user-info-form">
+            <h2>Bienvenido/a al</h2>
+            <h1>Quiz: Sensores Ópticos Pasivos</h1>
+            <p>Por favor, ingresa tu nombre y apellido para comenzar la evaluación.</p>
+            <div>
+                <label for="firstName">Nombre:</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div>
+                <label for="lastName">Apellido:</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div id="name-error" class="error-message" style="display:none;">Por favor, completa ambos campos.</div>
+            <button type="submit" id="start-quiz-button">Comenzar Quiz</button>
+        </form>
+    </div>
+
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <div id="logo-container">
+                <img src="https://i.postimg.cc/PJ4LR0Kd/ESCUDO-UNIMAGDALENA-PNG-1024x1024.png" alt="Logo Unimagdalena">
+            </div>
+            <h1>Quiz: Sensores Ópticos Pasivos</h1>
+            <p>Por Claudia Serpa</p>
+        </div>
+        <form id="quiz-form">
+            <!-- Las preguntas se insertarán aquí por JavaScript -->
+        </form>
+        <button id="submit-button">Evaluar Respuestas</button>
+        <div id="results" class="hidden"></div>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        const quizData = [
+            {
+                section: "Sensores Ópticos Pasivos",
+                question: "1. ¿Qué caracteriza a los sensores ópticos pasivos?",
+                options: {
+                    a: "Captan su propia señal emitida",
+                    b: "Captan radiación natural reflejada o emitida por los objetos",
+                    c: "Usan ondas de radio",
+                    d: "Operan solo en condiciones subterráneas"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "2. ¿Cuál es una desventaja de los sensores pasivos?",
+                options: {
+                    a: "Capturan imágenes con mucha precisión",
+                    b: "No requieren corrección radiométrica",
+                    c: "No funcionan bien en condiciones nubladas o sin luz solar",
+                    d: "Capturan en muchas bandas térmicas"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "3. ¿Cuál de los siguientes sensores es pasivo multiespectral?",
+                options: {
+                    a: "RADAR",
+                    b: "LiDAR",
+                    c: "MODIS",
+                    d: "SAR"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "4. ¿Qué tipo de plataformas suelen portar sensores pasivos?",
+                options: {
+                    a: "Satélites, drones y aviones",
+                    b: "Torres de comunicaciones",
+                    c: "Automóviles",
+                    d: "Robots submarinos"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "5. ¿Qué información capta un sensor térmico pasivo?",
+                options: {
+                    a: "Radiación reflejada en el visible",
+                    b: "Radiación microondas",
+                    c: "Radiación térmica emitida naturalmente por los objetos",
+                    d: "Frecuencia del espectro UV"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "6. ¿Cuál de estos sensores proporciona imágenes RGB como sensor pasivo?",
+                options: {
+                    a: "Cámara digital convencional",
+                    b: "LiDAR",
+                    c: "RADAR SAR",
+                    d: "Sensor de presión"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "7. ¿Qué resolución describe el número y ancho de las bandas espectrales?",
+                options: {
+                    a: "Radiométrica",
+                    b: "Espectral",
+                    c: "Temporal",
+                    d: "Espacial"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "8. ¿Qué sensor pasivo capta imágenes con decenas o cientos de bandas?",
+                options: {
+                    a: "Multiespectral",
+                    b: "Hiperespectral",
+                    c: "Térmico",
+                    d: "Pancromático"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "9. ¿Qué característica define a los sensores hiperespectrales?",
+                options: {
+                    a: "Capturan únicamente en RGB",
+                    b: "Capturan muchas bandas estrechas y contiguas del espectro",
+                    c: "Solo funcionan con paneles solares",
+                    d: "Detectan sonidos ambientales"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "10. ¿Qué resolución determina la capacidad de un sensor para diferenciar niveles de energía?",
+                options: {
+                    a: "Radiométrica",
+                    b: "Temporal",
+                    c: "Espectral",
+                    d: "Multidimensional"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "11. ¿Qué plataforma satelital posee sensores pasivos multiespectrales gratuitos?",
+                options: {
+                    a: "SPOT 6",
+                    b: "WorldView-3",
+                    c: "Sentinel-2",
+                    d: "SAR-RADAR"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "12. ¿Qué sensor pasivo se encuentra en Landsat 8/9?",
+                options: {
+                    a: "SAR",
+                    b: "OLI/TIRS",
+                    c: "LiDAR",
+                    d: "RADAR"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "13. ¿Qué tipo de sensor capta la energía reflejada por la superficie en bandas visibles e infrarrojas?",
+                options: {
+                    a: "Óptico pasivo",
+                    b: "Radar SAR",
+                    c: "Láser activo",
+                    d: "Espectrómetro Raman"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "14. ¿Qué fenómeno afecta negativamente la calidad de imágenes pasivas ópticas?",
+                options: {
+                    a: "Luz solar directa",
+                    b: "Presión atmosférica",
+                    c: "Nubosidad y sombras",
+                    d: "Alta reflectancia del NIR"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "15. ¿Qué sensor óptico pasivo proporciona imágenes térmicas desde satélite?",
+                options: {
+                    a: "MSI",
+                    b: "TIRS", // Thermal Infrared Sensor (en Landsat)
+                    c: "AVIRIS",
+                    d: "MODIS" // MODIS también tiene bandas térmicas
+                },
+                correctAnswer: "b" // TIRS es específicamente para térmico en Landsat. MODIS es más amplio.
+            },
+            {
+                question: "16. ¿Qué tipo de imágenes produce una cámara RGB?",
+                options: {
+                    a: "Multiespectrales en NIR",
+                    b: "Hiperespectrales",
+                    c: "Infrarrojas térmicas",
+                    d: "Imágenes en bandas roja, verde y azul"
+                },
+                correctAnswer: "d"
+            },
+            {
+                question: "17. ¿Qué tipo de datos captan los sensores térmicos pasivos?",
+                options: {
+                    a: "Temperatura superficial mediante radiación emitida",
+                    b: "Radiación reflejada del UV",
+                    c: "Longitudes de onda del SWIR",
+                    d: "Ruido atmosférico solar"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "18. ¿Qué se requiere para transformar valores digitales de sensores pasivos en reflectancia?",
+                options: {
+                    a: "Panel de absorción térmica",
+                    b: "Calibración radiométrica",
+                    c: "Refracción atmosférica",
+                    d: "Corrección acústica"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "19. ¿Qué diferencia principal tienen las cámaras hiperespectrales respecto a las multiespectrales?",
+                options: {
+                    a: "Capturan menos bandas, pero más amplias",
+                    b: "Capturan muchas bandas estrechas y continuas",
+                    c: "Solo funcionan de noche",
+                    d: "Solo se usan en submarinos"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "20. ¿Qué es la reflectancia medida por un sensor pasivo?",
+                options: {
+                    a: "Energía total emitida por el objeto",
+                    b: "Energía reflejada por una superficie en cada longitud de onda",
+                    c: "Radiación transmitida a través del aire",
+                    d: "Nivel de absorción espectral térmica"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "21. ¿Qué plataforma aérea puede usar cámaras multiespectrales pasivas?",
+                options: {
+                    a: "Helicóptero militar",
+                    b: "Dron",
+                    c: "Globo meteorológico",
+                    d: "Radar móvil"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "22. ¿Qué resolución tiene mayor influencia en detectar cambios sutiles de vegetación?",
+                options: {
+                    a: "Temporal",
+                    b: "Radiométrica",
+                    c: "Espectral",
+                    d: "Angular"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "23. ¿Qué tecnología pasiva se usa para detectar vigor vegetal mediante NDVI?",
+                options: {
+                    a: "Cámara pancromática",
+                    b: "Sensor radar",
+                    c: "Cámara multiespectral",
+                    d: "Sensor térmico"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "24. ¿Qué sensores ópticos pasivos se usan en MODIS?",
+                options: {
+                    a: "Sensores hiperespectrales",
+                    b: "Sensores térmicos infrarrojos y visibles", // MODIS tiene bandas en visible, NIR, SWIR, y TIR.
+                    c: "Sensores LiDAR",
+                    d: "Sensores radar"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "25. ¿Qué parte del espectro electromagnético usan los sensores térmicos?",
+                options: {
+                    a: "Visible",
+                    b: "Microondas",
+                    c: "Infrarrojo térmico",
+                    d: "UV"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "26. ¿Cuál es una condición atmosférica que afecta negativamente a los sensores ópticos pasivos?",
+                options: {
+                    a: "Cielo despejado",
+                    b: "Altitud elevada",
+                    c: "Niebla o nubosidad",
+                    d: "Alta humedad del suelo"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "27. ¿Qué propiedad espectral del agua permite identificarla con sensores pasivos?",
+                options: {
+                    a: "Alta reflectancia en visible",
+                    b: "Baja reflectancia en NIR", // El agua absorbe fuertemente en el NIR.
+                    c: "Alta temperatura superficial",
+                    d: "Baja emisión en microondas"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "28. ¿Qué tipo de cámaras se usan en teledetección agrícola pasiva con drones?",
+                options: {
+                    a: "Cámaras térmicas activas",
+                    b: "Cámaras hiperespectrales o multiespectrales",
+                    c: "Cámaras sonar",
+                    d: "Cámaras de rayos X"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "29. ¿Qué componente se requiere para calibrar un sensor pasivo durante un vuelo con dron?",
+                options: {
+                    a: "Baliza GPS",
+                    b: "Panel de referencia reflectante",
+                    c: "Espectro de presión",
+                    d: "Disco giroscópico"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "30. ¿Qué permite el análisis multitemporal con sensores pasivos?",
+                options: {
+                    a: "Comparar datos en diferentes momentos para detectar cambios",
+                    b: "Analizar sonidos de una zona",
+                    c: "Medir presión atmosférica",
+                    d: "Transmitir imágenes en tiempo real"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "31. ¿Qué banda espectral es más utilizada en el cálculo de NDVI?",
+                options: {
+                    a: "Azul y verde",
+                    b: "Rojo e infrarrojo cercano",
+                    c: "Verde y SWIR",
+                    d: "Térmica y UV"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "32. ¿Cuál es una ventaja de los sensores pasivos multiespectrales?",
+                options: {
+                    a: "Capturan muchas bandas contiguas y estrechas",
+                    b: "No dependen del sol",
+                    c: "Ofrecen información simultánea en varias bandas del espectro",
+                    d: "Pueden ver a través de nubes gruesas"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "33. ¿Qué es el BRDF en sensores pasivos?",
+                options: {
+                    a: "Reflectancia espectral promedio",
+                    b: "Distribución bidireccional de la reflectancia",
+                    c: "Distancia base real del foco",
+                    d: "Índice de biomasa remota"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "34. ¿Qué problema puede causar la sombra en imágenes pasivas?",
+                options: {
+                    a: "Mejorar el contraste espectral",
+                    b: "Dificultar la interpretación de coberturas reales",
+                    c: "Reflejar mejor la humedad",
+                    d: "Generar menos NDVI"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "35. ¿Qué sensor óptico pasivo proporciona datos desde el año 1999 y continúa en Landsat 8/9?",
+                options: {
+                    a: "ETM+", // ETM+ fue en Landsat 7.
+                    b: "AVHRR",
+                    c: "OLI",   // Operational Land Imager en Landsat 8 y 9.
+                    d: "SAR"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "36. ¿Qué método se aplica para eliminar los efectos de la atmósfera en imágenes pasivas?",
+                options: {
+                    a: "Interpolación espacial",
+                    b: "Corrección atmosférica",
+                    c: "Segmentación RGB",
+                    d: "Transformación PCA"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "37. ¿Qué índice espectral se puede derivar de sensores ópticos pasivos para medir estrés hídrico?",
+                options: {
+                    a: "NDMI", // Normalized Difference Moisture Index
+                    b: "GNDVI",
+                    c: "EVI",
+                    d: "TCI"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "38. ¿Qué representa el albedo medido con sensores ópticos pasivos?",
+                options: {
+                    a: "Radiación térmica",
+                    b: "Reflectancia global de una superficie",
+                    c: "Temperatura superficial",
+                    d: "Absorción de clorofila"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "39. ¿Qué longitud de onda usan los sensores pasivos para detectar vigor vegetal?",
+                options: {
+                    a: "Rojo y azul",
+                    b: "Infrarrojo cercano y rojo", // Base para NDVI
+                    c: "UV y SWIR",
+                    d: "Térmico e infrarrojo medio"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "40. ¿Qué sensor óptico pasivo forma parte del instrumento AVIRIS?",
+                options: {
+                    a: "RADAR",
+                    b: "Hiperespectral",
+                    c: "Térmico pasivo",
+                    d: "Multiespectral RGB"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "41. ¿Qué tipo de datos son requeridos para corregir imágenes pasivas en campo?",
+                options: {
+                    a: "Temperatura y humedad del aire",
+                    b: "Mediciones con paneles de referencia y espectros reales",
+                    c: "Datos de altura del sol",
+                    d: "Frecuencia de luz visible"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "42. ¿Cuál de las siguientes plataformas no suele portar sensores ópticos pasivos?",
+                options: {
+                    a: "Satélites",
+                    b: "Drones",
+                    c: "Aviones",
+                    d: "Estaciones sísmicas"
+                },
+                correctAnswer: "d"
+            },
+            {
+                question: "43. ¿Qué sensor pasivo se caracteriza por captar datos en el visible y NIR desde satélite con 10 m/píxel?",
+                options: {
+                    a: "Sentinel-2 MSI",
+                    b: "MODIS",
+                    c: "OLI-TIRS",
+                    d: "LiDAR"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "44. ¿Cuál es una aplicación común de sensores pasivos en agricultura?",
+                options: {
+                    a: "Estimación de productividad vegetal",
+                    b: "Análisis de estructuras subterráneas",
+                    c: "Captura de ondas sonoras",
+                    d: "Análisis de presión del suelo"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "45. ¿Qué parte del espectro no captan los sensores ópticos pasivos comunes?",
+                options: {
+                    a: "Visible",
+                    b: "NIR",
+                    c: "Térmico", // Algunos ópticos pasivos sí captan térmico (ej. TIRS, MODIS). La pregunta es un poco ambigua con "comunes".
+                    d: "Microondas" // Los sensores de microondas son típicamente activos (RADAR) o pasivos de microondas (radiómetros de microondas), pero no "ópticos" en el sentido común.
+                },
+                correctAnswer: "d"
+            },
+            {
+                question: "46. ¿Qué equipo se usa frecuentemente para validación de imágenes pasivas en campo?",
+                options: {
+                    a: "Barómetro",
+                    b: "Espectrómetro portátil",
+                    c: "Radar de suelo",
+                    d: "Medidor de PH"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "47. ¿Qué efecto puede causar la alta pendiente en terrenos captados con sensores pasivos?",
+                options: {
+                    a: "Mayor reflectancia uniforme",
+                    b: "Distorsión geométrica y variación de reflectancia",
+                    c: "Mejor captura de temperatura",
+                    d: "Captura de datos 3D"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "48. ¿Qué parámetro espectral es más usado para estimar clorofila en imágenes pasivas?",
+                options: {
+                    a: "Verde y azul",
+                    b: "Rojo y NIR", // Base para muchos índices de clorofila y vegetación
+                    c: "SWIR y térmico",
+                    d: "UV y rojo"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "49. ¿Qué información provee una imagen multiespectral RGB captada por sensor pasivo?",
+                options: {
+                    a: "Temperatura",
+                    b: "Cobertura visual en bandas roja, verde y azul",
+                    c: "Datos estructurales 3D",
+                    d: "Radiación microondas"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "50. ¿Qué tipo de cámara puede montarse en un dron para teledetección pasiva?",
+                options: {
+                    a: "Radar activo",
+                    b: "Multiespectral RGB-NIR",
+                    c: "Radar terrestre",
+                    d: "Térmica SAR"
+                },
+                correctAnswer: "b"
+            }
+        ];
+
+        const userInfoScreen = document.getElementById('user-info-screen');
+        const userInfoForm = document.getElementById('user-info-form');
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const nameErrorDiv = document.getElementById('name-error');
+
+        const quizContainer = document.querySelector('.quiz-container');
+        const quizForm = document.getElementById('quiz-form');
+        const submitButton = document.getElementById('submit-button');
+        const resultsDiv = document.getElementById('results');
+
+        let currentSection = "";
+        let userFirstName = "";
+        let userLastName = "";
+        let startTime;
+        const quizPdfTitle = "Quiz: Sensores Ópticos Pasivos"; // Título para el PDF y correo
+        const pdfFileNameBase = "Resultados_Sensores_Pasivos";
+
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            let timeString = "";
+            if (minutes > 0) {
+                timeString += `${minutes} minuto${minutes > 1 ? 's' : ''}`;
+            }
+            if (seconds > 0) {
+                if (minutes > 0) timeString += " y ";
+                timeString += `${seconds} segundo${seconds > 1 ? 's' : ''}`;
+            }
+            if (timeString === "") return "0 segundos";
+            return timeString;
+        }
+
+        function generateAndDownloadPDF(score, totalQuestions, duration, studentFirstName, studentLastName) {
+            const pdf = new jsPDF();
+            const fileName = `${studentFirstName}_${studentLastName}_${pdfFileNameBase}.pdf`;
+            let yPosition = 20;
+
+            pdf.setFontSize(18);
+            pdf.text(quizPdfTitle, 105, yPosition, { align: 'center' });
+            yPosition += 10;
+
+            pdf.setFontSize(12);
+            pdf.text(`Participante: ${studentFirstName} ${studentLastName}`, 20, yPosition);
+            yPosition += 10;
+            pdf.line(20, yPosition - 5, 190, yPosition - 5);
+
+            pdf.text(`Puntuación: ${score} de ${totalQuestions}`, 20, yPosition);
+            yPosition += 7;
+            pdf.text(`Tiempo Empleado: ${duration}`, 20, yPosition);
+            yPosition += 10;
+            pdf.line(20, yPosition - 5, 190, yPosition - 5);
+            
+            pdf.save(fileName);
+        }
+
+
+        function renderQuiz() {
+            let html = '';
+            let firstSectionProcessed = false; 
+
+            quizData.forEach((item, index) => {
+                const sectionName = item.section || "Preguntas Generales"; 
+
+                if (sectionName !== currentSection || !firstSectionProcessed) {
+                    currentSection = sectionName;
+                    html += `<h2 class="section-title">${currentSection}</h2>`;
+                    firstSectionProcessed = true; 
+                }
+
+                let questionText = item.question;
+                const questionNumberMatch = questionText.match(/^(\d+\.\s*)/);
+                if (questionNumberMatch) {
+                    questionText = questionText.replace(questionNumberMatch[0], '').trim();
+                }
+
+
+                html += `<div class="question-block" id="question-${index}">`;
+                html += `<p class="question-text">${index + 1}. ${questionText}</p>`;
+                html += `<div class="options">`;
+                for (const key in item.options) {
+                    html += `
+                        <label for="q${index}_${key}">
+                            <input type="radio" name="question${index}" id="q${index}_${key}" value="${key}">
+                            ${key.toUpperCase()}. ${item.options[key]}
+                        </label>
+                    `;
+                }
+                html += `</div></div>`;
+            });
+            quizForm.innerHTML = html;
+        }
+
+        function evaluateQuiz() {
+            const endTime = new Date();
+            const durationSeconds = Math.round((endTime - startTime) / 1000);
+            const formattedDuration = formatTime(durationSeconds);
+
+            let score = 0;
+            const radioButtons = quizForm.querySelectorAll('input[type="radio"]');
+
+            radioButtons.forEach(radio => {
+                radio.disabled = true;
+            });
+
+            quizData.forEach((item, index) => {
+                const selectedOption = quizForm.querySelector(`input[name="question${index}"]:checked`);
+                const optionLabels = quizForm.querySelectorAll(`#question-${index} .options label`);
+
+                optionLabels.forEach(label => {
+                    const radioInput = label.querySelector('input[type="radio"]');
+                    if (radioInput.value.toLowerCase() === item.correctAnswer.toLowerCase()) {
+                        label.classList.add('correct-answer');
+                    }
+                });
+
+                if (selectedOption) {
+                    const selectedLabel = selectedOption.parentElement;
+                    if (selectedOption.value.toLowerCase() === item.correctAnswer.toLowerCase()) {
+                        score++;
+                    } else {
+                        selectedLabel.classList.add('incorrect-answer');
+                        selectedLabel.classList.add('user-selected');
+                    }
+                }
+            });
+
+            generateAndDownloadPDF(score, quizData.length, formattedDuration, userFirstName, userLastName);
+
+            resultsDiv.innerHTML = `
+                <p>Evaluación completada por: <strong>${userFirstName} ${userLastName}</strong></p>
+                <p>Tu puntuación es: <strong>${score} de ${quizData.length}</strong></p>
+                <p>Tiempo empleado: <strong>${formattedDuration}</strong></p>
+                <p class="pdf-info">Se ha descargado un archivo PDF con tus resultados (${userFirstName}_${userLastName}_${pdfFileNameBase}.pdf).</p>
+            `;
+
+            const recipientEmail = "claumiseimbett@gmail.com";
+            const emailSubject = `Resultados del ${quizPdfTitle} - ${userFirstName} ${userLastName}`;
+            const emailBody = `Nombre: ${userFirstName} ${userLastName}\n\nPuntuación: ${score}/${quizData.length}\n\nTiempo empleado: ${formattedDuration}\n\n---\nPor favor, adjunte el archivo PDF '${userFirstName}_${userLastName}_${pdfFileNameBase}.pdf' que se ha descargado con los resultados.\nEste es un correo autogenerado.`;
+
+            const gmailURL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipientEmail)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+            resultsDiv.innerHTML += `<a href="${gmailURL}" id="email-link" target="_blank">Enviar Resultados por Gmail</a>`;
+            resultsDiv.classList.remove('hidden');
+            submitButton.style.display = 'none';
+        }
+
+        userInfoForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            userFirstName = firstNameInput.value.trim();
+            userLastName = lastNameInput.value.trim();
+
+            if (userFirstName === "" || userLastName === "") {
+                nameErrorDiv.style.display = 'block';
+            } else {
+                nameErrorDiv.style.display = 'none';
+                userInfoScreen.classList.add('hidden');
+                setTimeout(() => {
+                     userInfoScreen.style.display = 'none';
+                     quizContainer.style.display = 'block';
+                     startTime = new Date();
+                     renderQuiz();
+                }, 500);
+            }
+        });
+
+        submitButton.addEventListener('click', evaluateQuiz);
+
+    </script>
+</body>
+</html>

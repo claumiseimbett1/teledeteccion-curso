@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Sensores Activos (Radar y LiDAR)</title>
+    <!-- Incluir jsPDF desde CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="search"],
+        input[type="tel"],
+        input[type="url"],
+        textarea {
+            font-size: 16px;
+        }
+
+
+        #user-info-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 71, 171, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #user-info-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #user-info-screen h2 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 1.7em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        #user-info-screen h1 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 2em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        #user-info-screen p {
+            color: #e0e0e0;
+            margin-bottom: 25px;
+            text-align: center;
+            max-width: 90%;
+            font-size: 1em;
+        }
+
+        #user-info-form {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        #user-info-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1em;
+        }
+
+        #user-info-form input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #user-info-form input[type="text"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            outline: none;
+        }
+
+
+        #start-quiz-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        #start-quiz-button:hover {
+            background-color: #218838;
+        }
+        #start-quiz-button:active {
+            transform: translateY(1px);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: -15px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            width: 95%;
+            max-width: 850px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            box-sizing: border-box;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        #logo-container {
+            width: 120px;
+            max-width: 150px;
+            margin: 0 auto 15px auto;
+            overflow: hidden;
+        }
+
+        #logo-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+
+        .quiz-header h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.8em;
+        }
+        .quiz-header p {
+            font-size: 1em;
+            color: #555;
+        }
+
+
+        .section-title {
+            font-size: 1.4em;
+            color: #0056b3;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 6px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #fdfdff;
+            border-left: 5px solid #007bff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s, border-color 0.2s;
+            border: 1px solid #e0e0e0;
+            background-color: #fff;
+        }
+
+        .options label:hover {
+            background-color: #f0f8ff;
+            border-color: #b3d7ff;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+            vertical-align: middle;
+            transform: scale(1);
+        }
+
+        .correct-answer {
+            color: #155724;
+            font-weight: bold;
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+        }
+
+        .incorrect-answer {
+            color: #721c24;
+            font-weight: bold;
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+        }
+
+        .user-selected.incorrect-answer {
+             text-decoration: line-through;
+        }
+
+        #submit-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        #submit-button:hover {
+            background-color: #0056b3;
+        }
+        #submit-button:active {
+            transform: translateY(1px);
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f9ff;
+            border-radius: 8px;
+            font-size: 1.1em;
+            text-align: center;
+            border: 1px solid #b3d7ff;
+        }
+        #results.hidden {
+            display: none;
+        }
+        #results p {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        #results strong {
+            color: #0056b3;
+        }
+        #email-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        #email-link:hover {
+            background-color: #218838;
+        }
+         #email-link:active {
+            transform: translateY(1px);
+        }
+        .pdf-info {
+            font-style: italic;
+            color: #555;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+
+        @media (min-width: 600px) {
+            #user-info-screen h2 { font-size: 1.8em; }
+            #user-info-screen h1 { font-size: 2.2em; }
+            #user-info-screen p { font-size: 1.1em; max-width: 450px; }
+            #user-info-form { padding: 35px; width: 100%; max-width: 420px;}
+            #start-quiz-button { font-size: 1.2em; }
+            .quiz-container { padding: 25px; margin: 30px auto; width: 95%;}
+            #logo-container { width: 150px; margin-bottom: 20px; }
+            .quiz-header h1 { font-size: 2em; }
+            .quiz-header p { font-size: 1.1em; }
+            .section-title { font-size: 1.6em; }
+            .question-block { padding: 20px; border-left-width: 6px; }
+            .question-text { font-size: 1.1em; }
+            .options label { padding: 12px; }
+            .options input[type="radio"] { transform: scale(1.1); }
+            #submit-button { padding: 15px; font-size: 1.3em; }
+            #results { padding: 25px; font-size: 1.2em; }
+            #email-link { padding: 12px 25px; font-size: 1.05em; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="user-info-screen">
+        <form id="user-info-form">
+            <h2>Bienvenido/a al</h2>
+            <h1>Quiz: Sensores Activos (Radar y LiDAR)</h1>
+            <p>Por favor, ingresa tu nombre y apellido para comenzar la evaluación.</p>
+            <div>
+                <label for="firstName">Nombre:</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div>
+                <label for="lastName">Apellido:</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div id="name-error" class="error-message" style="display:none;">Por favor, completa ambos campos.</div>
+            <button type="submit" id="start-quiz-button">Comenzar Quiz</button>
+        </form>
+    </div>
+
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <div id="logo-container">
+                <img src="https://i.postimg.cc/PJ4LR0Kd/ESCUDO-UNIMAGDALENA-PNG-1024x1024.png" alt="Logo Unimagdalena">
+            </div>
+            <h1>Quiz: Sensores Activos (Radar y LiDAR)</h1>
+            <p>Por Claudia Serpa</p>
+        </div>
+        <form id="quiz-form">
+            <!-- Las preguntas se insertarán aquí por JavaScript -->
+        </form>
+        <button id="submit-button">Evaluar Respuestas</button>
+        <div id="results" class="hidden"></div>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        const quizData = [
+            {
+                section: "Sensores Activos (Radar y LiDAR)",
+                question: "1. ¿Qué define a un sensor activo en teledetección?",
+                options: {
+                    a: "Captura la luz solar reflejada",
+                    b: "Depende de condiciones atmosféricas óptimas",
+                    c: "Emite su propia energía hacia la superficie y mide el retorno",
+                    d: "Opera solo en el espectro visible"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "2. ¿Cuál es una ventaja clave de los sensores activos sobre los pasivos?",
+                options: {
+                    a: "Capturan imágenes solo de día",
+                    b: "Son más económicos",
+                    c: "Pueden operar sin luz solar y en condiciones nubladas",
+                    d: "Tienen menor resolución espacial"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "3. ¿Qué significa la sigla SAR?",
+                options: {
+                    a: "Sensor de Alta Resolución",
+                    b: "Radar de Apertura Sintética",
+                    c: "Reflectancia Atmosférica Satelital",
+                    d: "Sistema Activo de Radiación"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "4. ¿Qué tipo de energía usan los sensores radar?",
+                options: {
+                    a: "Ondas térmicas",
+                    b: "Microondas",
+                    c: "Infrarrojo cercano",
+                    d: "Radiación UV"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "5. ¿Qué característica permite que el radar atraviese la vegetación y la nubosidad?",
+                options: {
+                    a: "Alta resolución temporal",
+                    b: "Ondas largas de microondas",
+                    c: "Frecuencia óptica",
+                    d: "Curvas espectrales visibles"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "6. ¿Qué tipo de interacción mide el radar al regresar la señal al sensor?",
+                options: {
+                    a: "Absorción espectral",
+                    b: "Reflexión especular",
+                    c: "Retrodispersión",
+                    d: "Transmisión térmica"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "7. ¿Qué aplicación es típica de los sensores SAR?",
+                options: {
+                    a: "Medición de NDVI",
+                    b: "Monitoreo de cobertura vegetal en condiciones nubosas",
+                    c: "Captura RGB en campo",
+                    d: "Identificación de gases en atmósfera"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "8. ¿Qué unidad se usa para expresar la retrodispersión del radar?",
+                options: {
+                    a: "Watts",
+                    b: "Lux",
+                    c: "Decibelios (dB)",
+                    d: "Lumen"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "9. ¿Qué fenómeno puede distorsionar una imagen SAR?",
+                options: {
+                    a: "Aberración cromática",
+                    b: "Efecto Lambertiano",
+                    c: "Sombra y layover",
+                    d: "Reflexión especular"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "10. ¿Qué parámetro del radar controla la penetración en el suelo?",
+                options: {
+                    a: "Resolución radiométrica",
+                    b: "Frecuencia de la señal",
+                    c: "Temperatura atmosférica",
+                    d: "Altura solar"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "11. ¿Cuál es una ventaja de los sensores LiDAR sobre los ópticos pasivos?",
+                options: {
+                    a: "Capturan imágenes RGB",
+                    b: "Miden elevaciones con alta precisión en 3D",
+                    c: "No requieren corrección atmosférica",
+                    d: "Capturan muchas bandas espectrales"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "12. ¿Qué propiedad del terreno afecta fuertemente el retorno de señal radar?",
+                options: {
+                    a: "Color visible",
+                    b: "Humedad del suelo",
+                    c: "Altitud atmosférica",
+                    d: "Cantidad de clorofila"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "13. ¿Qué tipo de plataforma puede portar sensores radar SAR?",
+                options: {
+                    a: "Microscopios",
+                    b: "Satélites y aviones",
+                    c: "Torres de control",
+                    d: "Tractores agrícolas"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "14. ¿Qué parte del espectro usan los sensores activos de radar?",
+                options: {
+                    a: "Visible",
+                    b: "Infrarrojo",
+                    c: "Microondas",
+                    d: "UV"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "15. ¿Qué permite distinguir polarizaciones VV, VH, HH, HV en radar?",
+                options: {
+                    a: "Frecuencia solar",
+                    b: "Tipo de vegetación",
+                    c: "Orientación de la señal emitida y recibida",
+                    d: "Distancia entre píxeles"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "16. ¿Qué tipo de producto se puede generar con LiDAR?",
+                options: {
+                    a: "Modelo digital de elevación (MDE)",
+                    b: "Índice de vegetación",
+                    c: "Imagen RGB",
+                    d: "Espectro visible"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "17. ¿Qué fenómeno ocurre cuando la señal radar se refleja en un objeto vertical y regresa rápidamente?",
+                options: {
+                    a: "Difracción",
+                    b: "Sombra radar",
+                    c: "Layover",
+                    d: "Curva espectral"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "18. ¿Qué tecnología permite obtener perfiles verticales del terreno?",
+                options: {
+                    a: "MODIS",
+                    b: "LiDAR",
+                    c: "SAR",
+                    d: "Sentinel-2"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "19. ¿Qué se necesita para procesar adecuadamente una imagen SAR?",
+                options: {
+                    a: "Corrección ortorradial",
+                    b: "Corrección de retrodispersión y proyección geométrica",
+                    c: "Reproyección hiperespectral",
+                    d: "Interpolación espectral"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "20. ¿Qué longitud de onda del radar permite mayor penetración en vegetación densa?",
+                options: {
+                    a: "Corta (X)",
+                    b: "Larga (L)",
+                    c: "Infrarrojo",
+                    d: "Visible verde"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "21. ¿Qué limita el uso de sensores radar en ciertas aplicaciones agrícolas?",
+                options: {
+                    a: "Alta dependencia solar",
+                    b: "Alta complejidad de interpretación",
+                    c: "Falta de imágenes nocturnas",
+                    d: "Demasiado costo espectral"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "22. ¿Qué tipo de análisis requiere una imagen LiDAR para representar relieve?",
+                options: {
+                    a: "Análisis de reflectancia NIR",
+                    b: "Clasificación espectral",
+                    c: "Modelado digital de superficie",
+                    d: "Refracción atmosférica"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "23. ¿Qué ventaja tiene el radar frente al espectro óptico?",
+                options: {
+                    a: "Mayor resolución multiespectral",
+                    b: "Menor tamaño de imagen",
+                    c: "Independencia de la iluminación solar",
+                    d: "Captura de información de color"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "24. ¿Qué fenómeno puede causar errores en la estimación de alturas con SAR?",
+                options: {
+                    a: "NDVI alto",
+                    b: "Movimiento del suelo",
+                    c: "Falta de bandas térmicas",
+                    d: "Ausencia de UV"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "25. ¿Qué tecnología radar se utiliza para mediciones de desplazamientos milimétricos?",
+                options: {
+                    a: "RADAR convencional",
+                    b: "InSAR (Interferometría SAR)",
+                    c: "LiDAR láser",
+                    d: "MODIS térmico"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "26. ¿Qué aplicación permite InSAR en geociencias?",
+                options: {
+                    a: "Medir contenido de clorofila",
+                    b: "Detectar desplazamientos del terreno",
+                    c: "Calcular NDVI",
+                    d: "Medir salinidad del suelo"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "27. ¿Qué característica del radar SAR permite crear imágenes de alta resolución a partir de una antena pequeña?",
+                options: {
+                    a: "Uso de UV",
+                    b: "Polarización dual",
+                    c: "Apertura sintética",
+                    d: "Curvas hiperespectrales"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "28. ¿Qué significa la polarización VV en radar?",
+                options: {
+                    a: "Vertical emitida y vertical recibida",
+                    b: "Horizontal en emisión",
+                    c: "Visible-visible espectral",
+                    d: "Variación en verde"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "29. ¿Qué significa layover en una imagen radar?",
+                options: {
+                    a: "Zona sin datos",
+                    b: "Solapamiento donde objetos altos aparecen inclinados hacia el sensor",
+                    c: "Zona de nubes gruesas",
+                    d: "Imagen duplicada por ruido térmico"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "30. ¿Qué fenómeno genera zonas negras en imágenes SAR?",
+                options: {
+                    a: "Reflexión de UV",
+                    b: "Difracción espectral",
+                    c: "Sombra radar",
+                    d: "Altura solar"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "31. ¿Qué se requiere para producir una imagen interferométrica SAR?",
+                options: {
+                    a: "Dos adquisiciones SAR en distintos momentos",
+                    b: "Una imagen térmica y una pancromática",
+                    c: "Datos RGB y NDVI",
+                    d: "Imágenes hiperespectrales"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "32. ¿Qué propiedad permite a LiDAR generar nubes de puntos en 3D?",
+                options: {
+                    a: "Alta radiación NIR",
+                    b: "Precisión espacial angular del pulso láser",
+                    c: "Rebote óptico térmico",
+                    d: "Compresión multiespectral"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "33. ¿Qué parámetro se ajusta en LiDAR para modificar la densidad de puntos?",
+                options: {
+                    a: "Frecuencia de pulso láser",
+                    b: "Color RGB",
+                    c: "Temperatura ambiente",
+                    d: "Número de bandas espectrales"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "34. ¿Qué limita la penetración del láser LiDAR en vegetación densa?",
+                options: {
+                    a: "Longitud de onda usada",
+                    b: "Altura de la plataforma",
+                    c: "Frecuencia solar",
+                    d: "Tipo de suelo"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "35. ¿Qué producto derivado de LiDAR permite modelar copas de árboles?",
+                options: {
+                    a: "Modelo de elevación del terreno (DTM)",
+                    b: "Modelo digital de superficie (DSM)",
+                    c: "Índice espectral",
+                    d: "Reflectancia del NIR"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "36. ¿Qué parte del espectro se usa normalmente en sensores LiDAR?",
+                options: {
+                    a: "UV",
+                    b: "Visible rojo",
+                    c: "Infrarrojo cercano",
+                    d: "Microondas"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "37. ¿Qué ocurre con la señal radar en suelos húmedos?",
+                options: {
+                    a: "Mayor absorción y menor retorno",
+                    b: "Mayor retrodispersión", // El agua aumenta la constante dieléctrica, causando mayor retrodispersión.
+                    c: "Total bloqueo del pulso",
+                    d: "Disminución de polarización"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "38. ¿Qué técnica activa se utiliza para batimetría?",
+                options: {
+                    a: "Radar SAR",
+                    b: "MODIS",
+                    c: "LiDAR azul", // LiDAR verde/azul para penetración en agua.
+                    d: "Cámara RGB"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "39. ¿Qué fenómeno puede mejorar el contraste en imágenes SAR?",
+                options: {
+                    a: "Albedo elevado",
+                    b: "Textura superficial",
+                    c: "Alta radiación solar",
+                    d: "Curva espectral roja"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "40. ¿Qué tipo de resolución influye más en la capacidad del radar para diferenciar objetos pequeños?",
+                options: {
+                    a: "Radiométrica",
+                    b: "Espacial",
+                    c: "Angular",
+                    d: "Multiespectral"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "41. ¿Qué aplicación típica tiene el LiDAR en silvicultura?",
+                options: {
+                    a: "Medición de clorofila",
+                    b: "Monitoreo térmico",
+                    c: "Estimación de altura de árboles",
+                    d: "Análisis de humedad del suelo"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "42. ¿Qué tecnología se usa para detección de cambios superficiales con precisión milimétrica?",
+                options: {
+                    a: "InSAR",
+                    b: "RGB + NDVI",
+                    c: "Sensor pancromático",
+                    d: "MODIS térmico"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "43. ¿Qué limita la interpretación de imágenes SAR para usuarios no especializados?",
+                options: {
+                    a: "Falta de bandas térmicas",
+                    b: "Complejidad de análisis y ruido geométrico",
+                    c: "Poca resolución espectral",
+                    d: "Exceso de contraste visual"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "44. ¿Qué parámetro SAR se analiza para diferenciar tipos de cobertura?",
+                options: {
+                    a: "NDVI",
+                    b: "Polarización y textura de la señal de retrodispersión",
+                    c: "Índice de sombra",
+                    d: "Reflectancia RGB"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "45. ¿Qué longitud de onda del radar permite menor penetración y mejor definición?",
+                options: {
+                    a: "Banda L",
+                    b: "Banda X", // Longitudes de onda más cortas (mayor frecuencia) dan mejor resolución espacial pero menos penetración.
+                    c: "Banda S",
+                    d: "Banda P"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "46. ¿Qué fenómeno causa diferencias en el retorno radar en superficies rugosas vs lisas?",
+                options: {
+                    a: "Textura espectral",
+                    b: "Interferencia NIR",
+                    c: "Retrodispersión direccional",
+                    d: "Especularidad de la superficie" // Superficies lisas tienden a reflexión especular (lejos del sensor), rugosas a difusa (más retorno).
+                },
+                correctAnswer: "d"
+            },
+            {
+                question: "47. ¿Qué factor aumenta la precisión en LiDAR topográfico?",
+                options: {
+                    a: "Baja frecuencia del pulso",
+                    b: "Alta densidad de puntos",
+                    c: "Altitud elevada",
+                    d: "Rebote espectral en azul"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "48. ¿Qué producto se obtiene al sustraer DSM y DTM generados con LiDAR?",
+                options: {
+                    a: "Índice NDVI",
+                    b: "Modelo de altura de vegetación (CHM)",
+                    c: "Imagen pancromática",
+                    d: "Curva espectral"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "49. ¿Qué tecnología activa se ha usado en arqueología para descubrir estructuras ocultas bajo vegetación?",
+                options: {
+                    a: "SAR X-band",
+                    b: "MODIS",
+                    c: "LiDAR",
+                    d: "Sensor RGB"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "50. ¿Qué satélite proporciona datos SAR gratuitos?",
+                options: {
+                    a: "Sentinel-1",
+                    b: "Landsat 8",
+                    c: "MODIS",
+                    d: "WorldView-3"
+                },
+                correctAnswer: "a"
+            }
+        ];
+
+        const userInfoScreen = document.getElementById('user-info-screen');
+        const userInfoForm = document.getElementById('user-info-form');
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const nameErrorDiv = document.getElementById('name-error');
+
+        const quizContainer = document.querySelector('.quiz-container');
+        const quizForm = document.getElementById('quiz-form');
+        const submitButton = document.getElementById('submit-button');
+        const resultsDiv = document.getElementById('results');
+
+        let currentSection = "";
+        let userFirstName = "";
+        let userLastName = "";
+        let startTime;
+        const quizPdfTitle = "Quiz: Sensores Activos (Radar y LiDAR)"; // Título para el PDF y correo
+        const pdfFileNameBase = "Resultados_Sensores_Activos";
+
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            let timeString = "";
+            if (minutes > 0) {
+                timeString += `${minutes} minuto${minutes > 1 ? 's' : ''}`;
+            }
+            if (seconds > 0) {
+                if (minutes > 0) timeString += " y ";
+                timeString += `${seconds} segundo${seconds > 1 ? 's' : ''}`;
+            }
+            if (timeString === "") return "0 segundos";
+            return timeString;
+        }
+
+        function generateAndDownloadPDF(score, totalQuestions, duration, studentFirstName, studentLastName) {
+            const pdf = new jsPDF();
+            const fileName = `${studentFirstName}_${studentLastName}_${pdfFileNameBase}.pdf`;
+            let yPosition = 20;
+
+            pdf.setFontSize(18);
+            pdf.text(quizPdfTitle, 105, yPosition, { align: 'center' });
+            yPosition += 10;
+
+            pdf.setFontSize(12);
+            pdf.text(`Participante: ${studentFirstName} ${studentLastName}`, 20, yPosition);
+            yPosition += 10;
+            pdf.line(20, yPosition - 5, 190, yPosition - 5);
+
+            pdf.text(`Puntuación: ${score} de ${totalQuestions}`, 20, yPosition);
+            yPosition += 7;
+            pdf.text(`Tiempo Empleado: ${duration}`, 20, yPosition);
+            yPosition += 10;
+            pdf.line(20, yPosition - 5, 190, yPosition - 5);
+            
+            pdf.save(fileName);
+        }
+
+
+        function renderQuiz() {
+            let html = '';
+            let firstSectionProcessed = false; 
+
+            quizData.forEach((item, index) => {
+                const sectionName = item.section || "Preguntas Generales"; 
+
+                if (sectionName !== currentSection || !firstSectionProcessed) {
+                    currentSection = sectionName;
+                    html += `<h2 class="section-title">${currentSection}</h2>`;
+                    firstSectionProcessed = true; 
+                }
+
+                let questionText = item.question;
+                const questionNumberMatch = questionText.match(/^(\d+\.\s*)/);
+                if (questionNumberMatch) {
+                    questionText = questionText.replace(questionNumberMatch[0], '').trim();
+                }
+
+
+                html += `<div class="question-block" id="question-${index}">`;
+                html += `<p class="question-text">${index + 1}. ${questionText}</p>`;
+                html += `<div class="options">`;
+                for (const key in item.options) {
+                    html += `
+                        <label for="q${index}_${key}">
+                            <input type="radio" name="question${index}" id="q${index}_${key}" value="${key}">
+                            ${key.toUpperCase()}. ${item.options[key]}
+                        </label>
+                    `;
+                }
+                html += `</div></div>`;
+            });
+            quizForm.innerHTML = html;
+        }
+
+        function evaluateQuiz() {
+            const endTime = new Date();
+            const durationSeconds = Math.round((endTime - startTime) / 1000);
+            const formattedDuration = formatTime(durationSeconds);
+
+            let score = 0;
+            const radioButtons = quizForm.querySelectorAll('input[type="radio"]');
+
+            radioButtons.forEach(radio => {
+                radio.disabled = true;
+            });
+
+            quizData.forEach((item, index) => {
+                const selectedOption = quizForm.querySelector(`input[name="question${index}"]:checked`);
+                const optionLabels = quizForm.querySelectorAll(`#question-${index} .options label`);
+
+                optionLabels.forEach(label => {
+                    const radioInput = label.querySelector('input[type="radio"]');
+                    if (radioInput.value.toLowerCase() === item.correctAnswer.toLowerCase()) {
+                        label.classList.add('correct-answer');
+                    }
+                });
+
+                if (selectedOption) {
+                    const selectedLabel = selectedOption.parentElement;
+                    if (selectedOption.value.toLowerCase() === item.correctAnswer.toLowerCase()) {
+                        score++;
+                    } else {
+                        selectedLabel.classList.add('incorrect-answer');
+                        selectedLabel.classList.add('user-selected');
+                    }
+                }
+            });
+
+            generateAndDownloadPDF(score, quizData.length, formattedDuration, userFirstName, userLastName);
+
+            resultsDiv.innerHTML = `
+                <p>Evaluación completada por: <strong>${userFirstName} ${userLastName}</strong></p>
+                <p>Tu puntuación es: <strong>${score} de ${quizData.length}</strong></p>
+                <p>Tiempo empleado: <strong>${formattedDuration}</strong></p>
+                <p class="pdf-info">Se ha descargado un archivo PDF con tus resultados (${userFirstName}_${userLastName}_${pdfFileNameBase}.pdf).</p>
+            `;
+
+            const recipientEmail = "claumiseimbett@gmail.com";
+            const emailSubject = `Resultados del ${quizPdfTitle} - ${userFirstName} ${userLastName}`;
+            const emailBody = `Nombre: ${userFirstName} ${userLastName}\n\nPuntuación: ${score}/${quizData.length}\n\nTiempo empleado: ${formattedDuration}\n\n---\nPor favor, adjunte el archivo PDF '${userFirstName}_${userLastName}_${pdfFileNameBase}.pdf' que se ha descargado con los resultados.\nEste es un correo autogenerado.`;
+
+            const gmailURL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipientEmail)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+            resultsDiv.innerHTML += `<a href="${gmailURL}" id="email-link" target="_blank">Enviar Resultados por Gmail</a>`;
+            resultsDiv.classList.remove('hidden');
+            submitButton.style.display = 'none';
+        }
+
+        userInfoForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            userFirstName = firstNameInput.value.trim();
+            userLastName = lastNameInput.value.trim();
+
+            if (userFirstName === "" || userLastName === "") {
+                nameErrorDiv.style.display = 'block';
+            } else {
+                nameErrorDiv.style.display = 'none';
+                userInfoScreen.classList.add('hidden');
+                setTimeout(() => {
+                     userInfoScreen.style.display = 'none';
+                     quizContainer.style.display = 'block';
+                     startTime = new Date();
+                     renderQuiz();
+                }, 500);
+            }
+        });
+
+        submitButton.addEventListener('click', evaluateQuiz);
+
+    </script>
+</body>
+</html>

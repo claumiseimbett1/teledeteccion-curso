@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos de Teledetección - Tutorial Interactivo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column; /* Para alinear logos y container */
+            align-items: center;
+            min-height: 100vh;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .logos-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px; /* Espacio entre logos */
+            flex-wrap: wrap; /* Para que los logos se ajusten en pantallas pequeñas */
+        }
+
+        .logos-header img {
+            max-height: 80px; /* Ajusta según el tamaño deseado */
+            width: auto;
+            object-fit: contain;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: #005a87; /* Azul oscuro profesional */
+            text-align: center;
+            border-bottom: 2px solid #0077cc; /* Azul más brillante */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: none;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step h2 {
+            color: #0077cc;
+            margin-top: 0;
+        }
+
+        .icon-text {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .icon-text .icon {
+            font-size: 1.8em;
+            margin-right: 10px;
+            color: #0077cc;
+        }
+        
+        .icon-text .icon.small {
+            font-size: 1.2em;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .navigation button {
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .navigation button:hover {
+            background-color: #005a87;
+        }
+
+        .navigation button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .warning-common, .key-point {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .warning-common {
+            background-color: #fff3cd; /* Amarillo claro para advertencias */
+            border-left: 5px solid #ffeeba;
+            color: #856404;
+        }
+        
+        .key-point {
+            background-color: #d1ecf1; /* Azul claro para puntos clave */
+            border-left: 5px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .warning-common .icon, .key-point .icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 10px;
+            background-color: #0077cc;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 10px;
+            color: white;
+            font-size: 8px;
+        }
+        
+        .final-summary strong {
+            color: #0077cc;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .logos-header img {
+                max-height: 60px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            .step h2 {
+                font-size: 1.2em;
+            }
+            .navigation button {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+            .icon-text .icon {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logos-header">
+        <img src="https://i.postimg.cc/PJ4LR0Kd/ESCUDO-UNIMAGDALENA-PNG-1024x1024.png" alt="Logo Unimagdalena">
+        <img src="https://i.postimg.cc/jSLFMxXG/Logo-Claudia.png" alt="Logo Claudia Serpa">
+    </div>
+
+    <div class="container">
+        <h1>🛰️ Fundamentos de Teledetección</h1>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Paso 1: Introducción -->
+        <div class="step active" id="step-1">
+            <h2>Bienvenido/a al mundo de la Teledetección</h2>
+            <p class="icon-text">
+                <span class="icon">👋</span>
+                Este tutorial te guiará por los conceptos básicos de la teledetección. ¡Es más fácil de lo que piensas!
+            </p>
+            <p>Aprenderás qué es, cómo funciona y para qué se utiliza esta fascinante tecnología.</p>
+        </div>
+
+        <!-- Paso 2: ¿Qué es la Teledetección? -->
+        <div class="step" id="step-2">
+            <h2>¿Qué es la Teledetección?</h2>
+            <p class="icon-text">
+                <span class="icon">🌍</span>
+                Imagina tomar una foto de la Tierra desde muy lejos, ¡sin tocarla! Eso es, en esencia, la teledetección.
+            </p>
+            <p>Es la ciencia y tecnología de obtener información sobre objetos o áreas de la Tierra (o incluso otros planetas) a distancia, usualmente desde satélites o aeronaves.</p>
+            <p class="key-point">
+                <span class="icon small">💡</span>
+                <strong>Clave:</strong> Se basa en analizar la energía (como la luz o las microondas) que los objetos emiten, reflejan o dispersan.
+            </p>
+        </div>
+        
+        <!-- Paso 3: ¿Cómo Funciona? Sensores y Plataformas -->
+        <div class="step" id="step-3">
+            <h2>¿Cómo Funciona? Sensores y Plataformas</h2>
+            <p class="icon-text">
+                <span class="icon">📡</span>
+                Para "ver" a distancia, usamos:
+            </p>
+            <ul>
+                <li><strong>Plataformas:</strong> Son los vehículos que llevan los instrumentos. Ejemplos:
+                    <ul>
+                        <li>🛰️ Satélites (orbitan la Tierra, como Sentinel o Landsat)</li>
+                        <li>🚁 Drones (vuelan más bajo, gran detalle)</li>
+                        <li>✈️ Aviones (cobertura intermedia)</li>
+                    </ul>
+                </li>
+                <li><strong>Sensores:</strong> Son los "ojos" en estas plataformas. Capturan la energía que interactúa con la superficie terrestre. Se dividen principalmente en dos tipos: Pasivos y Activos.</li>
+            </ul>
+        </div>
+
+        <!-- Paso 4: Sensores Pasivos -->
+        <div class="step" id="step-4">
+            <h2>Sensores Pasivos: Escuchando a la Tierra</h2>
+            <p class="icon-text">
+                <span class="icon">☀️</span>
+                Los sensores pasivos son como cámaras muy avanzadas. Detectan la energía natural que es <strong>reflejada</strong> (principalmente luz solar) o <strong>emitida</strong> (calor) por la superficie terrestre.
+            </p>
+            <p><strong>¿Cómo funcionan?</strong></p>
+            <ul>
+                <li>Capturan la luz solar que rebota en los objetos (vegetación, suelo, agua).</li>
+                <li>También pueden medir la energía térmica (calor) que emiten los cuerpos.</li>
+            </ul>
+            <p><strong>Ejemplos comunes:</strong></p>
+            <ul>
+                <li>Cámaras ópticas en satélites (Sentinel-2, Landsat) que toman imágenes en diferentes "colores" o bandas espectrales, incluyendo el visible y el infrarrojo.</li>
+                <li>Cámaras multiespectrales en drones.</li>
+            </ul>
+            <p class="warning-common">
+                <span class="icon small">⚠️</span>
+                <strong>Limitaciones:</strong>
+                <ul>
+                    <li>Dependen de la luz solar (no funcionan bien de noche para imágenes reflejadas).</li>
+                    <li>Son afectados por las nubes, que bloquean la visión.</li>
+                </ul>
+            </p>
+        </div>
+
+        <!-- Paso 5: Sensores Activos -->
+        <div class="step" id="step-5">
+            <h2>Sensores Activos: Iluminando la Tierra</h2>
+            <p class="icon-text">
+                <span class="icon">💡</span>
+                Los sensores activos son como tener una linterna y una cámara al mismo tiempo. <strong>Emiten su propia energía</strong> (luz o microondas) hacia la superficie y luego miden la señal que regresa (eco).
+            </p>
+            <p><strong>Tipos principales y cómo funcionan:</strong></p>
+            <ul>
+                <li><strong>RADAR (Radio Detection and Ranging):</strong>
+                    <ul>
+                        <li>Emite pulsos de microondas.</li>
+                        <li>Mide el tiempo y la intensidad de la señal de microondas que rebota.</li>
+                        <li>Muy útil para: medir humedad del suelo, detectar estructuras, crear modelos de elevación, y ¡puede "ver" a través de nubes y de noche!</li>
+                        <li>Ejemplo: Satélite Sentinel-1.</li>
+                    </ul>
+                </li>
+                <li><strong>LiDAR (Light Detection and Ranging):</strong>
+                    <ul>
+                        <li>Emite pulsos de luz láser (generalmente infrarroja o verde).</li>
+                        <li>Mide con gran precisión el tiempo que tarda el pulso en regresar.</li>
+                        <li>Muy útil para: crear modelos 3D muy detallados del terreno y la altura de la vegetación (árboles, copas).</li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="key-point">
+                <span class="icon small">👍</span>
+                <strong>Ventajas:</strong>
+                <ul>
+                    <li>Pueden operar de día y de noche.</li>
+                    <li>El RADAR puede penetrar nubes, lluvia ligera y humo.</li>
+                    <li>LiDAR ofrece mediciones de altura muy precisas.</li>
+                </ul>
+            </p>
+        </div>
+
+        <!-- Paso 6: Concepto de Resolución -->
+        <div class="step" id="step-6">
+            <h2>Concepto de "Resolución" (Nivel de Detalle)</h2>
+            <p class="icon-text">
+                <span class="icon">🔍</span>
+                La resolución nos dice cuán detallada es la información que obtenemos. Hay varios tipos:
+            </p>
+            <ul>
+                <li><strong>Espacial:</strong> El tamaño del área más pequeña detectable en el suelo (píxel). <em>Ej: 10m significa que cada píxel representa un cuadrado de 10x10 metros. Drones pueden tener resolución de centímetros.</em></li>
+                <li><strong>Espectral:</strong> Cuántas y qué tan específicas son las "bandas de color" (porciones del espectro electromagnético) que el sensor puede ver. <em>Más bandas = más información sobre los materiales.</em></li>
+                <li><strong>Temporal:</strong> Con qué frecuencia el sensor toma una imagen del mismo lugar. <em>Ej: Sentinel-2 revisita cada 5 días.</em></li>
+                <li><strong>Radiométrica:</strong> La capacidad del sensor para distinguir pequeñas diferencias en la energía recibida (brillo). <em>Más bits = más niveles de gris o color, detectando cambios sutiles.</em></li>
+            </ul>
+        </div>
+
+        <!-- Paso 7: El Espectro Electromagnético y Firmas Espectrales -->
+        <div class="step" id="step-7">
+            <h2>El Espectro Electromagnético y Firmas Espectrales</h2>
+            <p class="icon-text">
+                <span class="icon">🌈</span>
+                La luz visible es solo una pequeña parte de toda la energía que nos rodea (el espectro electromagnético). Los sensores de teledetección pueden "ver" otras partes como:
+            </p>
+            <ul>
+                <li><strong>Infrarrojo (IR):</strong> Muy útil para estudiar la vegetación (salud, estrés) y la temperatura.</li>
+                <li><strong>Microondas:</strong> Usadas por el RADAR para ver a través de nubes y medir humedad, rugosidad.</li>
+            </ul>
+            <p class="icon-text">
+                <span class="icon">📊</span>
+                <strong>Firma Espectral:</strong> Cada material (agua, suelo, tipo de planta) refleja y absorbe energía de manera diferente en distintas partes del espectro. Esta "huella digital" de energía se llama firma espectral y nos ayuda a identificar qué hay en una imagen. Por ejemplo, la vegetación sana refleja mucho en el infrarrojo cercano.
+            </p>
+        </div>
+        
+        <!-- Paso 8: Preprocesamiento de Imágenes -->
+        <div class="step" id="step-8">
+            <h2>Preprocesamiento de Imágenes: Limpiando los Datos</h2>
+            <p class="icon-text">
+                <span class="icon">⚙️</span>
+                Las imágenes "crudas" de los sensores suelen tener errores o distorsiones. El preprocesamiento las corrige para obtener datos precisos y comparables. Es un paso fundamental.
+            </p>
+            <ul>
+                <li><strong>Corrección Radiométrica:</strong>
+                    <ul>
+                       <li>Ajusta los brillos para que sean consistentes.</li>
+                       <li>Elimina el "ruido" del sensor o efectos de iluminación (ej. calibración con paneles blancos para drones).</li>
+                       <li>Convierte los valores digitales (DN) a unidades físicas como reflectancia o radiancia.</li>
+                    </ul>
+                </li>
+                <li><strong>Corrección Atmosférica:</strong>
+                    <ul>
+                        <li>Reduce los efectos de la atmósfera (niebla, polvo, vapor de agua) que distorsionan los colores y brillos.</li>
+                        <p class="warning-common">
+                            <span class="icon small">☁️</span>
+                            <strong>Importante:</strong> La atmósfera afecta cómo vemos la superficie desde el espacio. Esta corrección es vital para comparar imágenes de diferentes fechas.
+                        </p>
+                    </ul>
+                </li>
+                <li><strong>Corrección Geométrica:</strong>
+                     <ul>
+                        <li>Asegura que cada píxel de la imagen esté en su ubicación geográfica correcta en el mapa (georreferenciación y ortorrectificación).</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Paso 9: Índices de Vegetación (Ej: NDVI) -->
+        <div class="step" id="step-9">
+            <h2>Índices de Vegetación (Ej: NDVI)</h2>
+            <p class="icon-text">
+                <span class="icon">🌿</span>
+                Son combinaciones matemáticas simples de diferentes bandas espectrales (generalmente rojo e infrarrojo cercano) para resaltar características específicas, como la cantidad y salud de la vegetación.
+            </p>
+            <p><strong>NDVI (Índice de Vegetación de Diferencia Normalizada):</strong> Es muy popular y se calcula como: <code>(NIR - Rojo) / (NIR + Rojo)</code></p>
+            <ul>
+                <li>Donde NIR es la reflectancia en la banda del Infrarrojo Cercano y Rojo es la reflectancia en la banda Roja.</li>
+                <li>Valores altos (cercanos a +1) indican vegetación densa y saludable (porque las plantas sanas reflejan mucho NIR y absorben mucho Rojo).</li>
+                <li>Valores bajos (cercanos a 0 o negativos) indican suelo desnudo, agua, nieve, o vegetación estresada/muerta.</li>
+            </ul>
+            <p class="key-point">
+                <span class="icon small">💡</span>
+                <strong>Utilidad:</strong> Permite monitorear la salud de los cultivos, detectar estrés hídrico, mapear áreas verdes y cambios en la vegetación a lo largo del tiempo.
+            </p>
+        </div>
+
+        <!-- Paso 10: Aplicaciones de la Teledetección -->
+        <div class="step" id="step-10">
+            <h2>Aplicaciones de la Teledetección</h2>
+            <p class="icon-text">
+                <span class="icon">💡</span>
+                La teledetección tiene muchísimos usos:
+            </p>
+            <ul>
+                <li>🌱 <strong>Agricultura de Precisión:</strong> Monitorear salud de cultivos, estrés hídrico, estimar biomasa y cosechas.</li>
+                <li>🌳 <strong>Silvicultura:</strong> Detectar deforestación, salud de bosques, mapear tipos de árboles y áreas quemadas.</li>
+                <li>💧 <strong>Gestión del Agua:</strong> Monitorear calidad del agua, extensión de inundaciones, humedad del suelo, cuerpos de agua.</li>
+                <li>🌍 <strong>Medio Ambiente:</strong> Evaluar desastres naturales, monitorear glaciares, calidad del aire, cambio climático.</li>
+                <li>🏘️ <strong>Urbanismo:</strong> Planificar crecimiento urbano, mapear uso del suelo, monitorear infraestructura.</li>
+                <li>⛏️ <strong>Geología:</strong> Detectar fallas, analizar tipos de suelo y minerales, exploración de recursos.</li>
+            </ul>
+        </div>
+
+        <!-- Paso 11: Herramientas de Análisis -->
+        <div class="step" id="step-11">
+            <h2>Herramientas de Análisis</h2>
+            <p class="icon-text">
+                <span class="icon">💻</span>
+                Para trabajar con datos de teledetección, se usan diferentes software y plataformas:
+            </p>
+            <ul>
+                <li><strong>QGIS, ArcGIS, ENVI, SNAP:</strong> Software de Sistemas de Información Geográfica (SIG) y procesamiento de imágenes para visualizar, analizar datos espaciales y realizar correcciones.</li>
+                <li><strong>Google Earth Engine (GEE):</strong> Plataforma en la nube con acceso a enormes catálogos de imágenes satelitales (Sentinel, Landsat, MODIS) y potentes herramientas de procesamiento a gran escala.</li>
+                <li><strong>Python (con librerías como Rasterio, Geopandas, Scikit-learn), R:</strong> Lenguajes de programación con librerías especializadas para análisis avanzado, automatización y machine learning.</li>
+            </ul>
+            <p>Estas herramientas permiten procesar imágenes, calcular índices, realizar clasificaciones de cobertura del suelo, detectar cambios y mucho más.</p>
+        </div>
+
+        <!-- Paso 12: Resumen Final -->
+        <div class="step final-summary" id="step-12">
+            <h2>¡Felicidades! Has completado los Fundamentos.</h2>
+            <p class="icon-text">
+                <span class="icon">🎉</span>
+                Repasemos los puntos clave:
+            </p>
+            <ul>
+                <li><strong>Teledetección:</strong> Obtener información de la Tierra a distancia usando la energía que refleja, emite o dispersa.</li>
+                <li><strong>Plataformas y Sensores:</strong> Vehículos (satélites, drones, aviones) con "ojos" (sensores) que capturan datos.</li>
+                <li><strong>Pasivos:</strong> Detectan energía natural (solar reflejada, calor emitido). Ej: Sentinel-2. Afectados por nubes y noche.</li>
+                <li><strong>Activos:</strong> Emiten su propia energía y miden el eco. Ej: RADAR (Sentinel-1), LiDAR. Funcionan de día/noche, RADAR ve a través de nubes.</li>
+                <li><strong>Resolución:</strong> Define el nivel de detalle (espacial, espectral, temporal, radiométrica).</li>
+                <li><strong>Firma Espectral:</strong> "Huella digital" energética de los materiales, clave para identificarlos.</li>
+                <li><strong>Preprocesamiento:</strong> Corrige errores (radiométricos, atmosféricos, geométricos) para tener datos fiables.</li>
+                <li><strong>Índices (NDVI):</strong> Fórmulas para resaltar características como la salud vegetal.</li>
+                <li><strong>Aplicaciones:</strong> ¡Muchísimas! Desde agricultura hasta gestión de desastres.</li>
+                <li><strong>Herramientas:</strong> QGIS, GEE, Python para analizar los datos.</li>
+            </ul>
+            <p>¡Sigue explorando este fascinante campo!</p>
+        </div>
+
+        <div class="navigation">
+            <button id="prevBtn" disabled>Anterior</button>
+            <button id="nextBtn">Siguiente</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 12; // Total de pasos
+        const steps = document.querySelectorAll('.step');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function updateStepView() {
+            steps.forEach(step => step.classList.remove('active'));
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            prevBtn.disabled = currentStep === 1;
+            nextBtn.disabled = currentStep === totalSteps;
+            
+            // Ajuste para que la barra de progreso comience en 0% para el primer paso y 100% para el último
+            const progressPercentage = (currentStep === 1) ? 0 : ((currentStep -1) / (totalSteps -1 )) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateStepView();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepView();
+            }
+        });
+
+        // Inicializar
+        updateStepView();
+    </script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa e Interactiva de Teledetección</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f0f4f8;
+            scroll-behavior: smooth;
+        }
+        .content-container {
+            max-height: 75vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #888 #f1f1f1;
+        }
+        .content-container::-webkit-scrollbar { width: 8px; }
+        .content-container::-webkit-scrollbar-track { background: #e0e7ff; }
+        .content-container::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
+        .content-container::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
+        .topic-btn:hover { transform: translateX(3px); transition: transform 0.2s; }
+        .subtopic-item:hover { background-color: rgba(79, 70, 229, 0.1); transition: background-color 0.2s; }
+        .detail-content { display: none; }
+        .detail-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Estilos para Pestañas (Tabs) */
+        .tab-btn { transition: all 0.2s ease-in-out; }
+        .tab-btn.active { border-color: #4f46e5; color: #4f46e5; background-color: #eef2ff; }
+        .tab-content-pane { display: none; }
+        .tab-content-pane.active { display: block; animation: fadeIn 0.4s; }
+        /* Estilos para Quizzes */
+        .quiz-btn {
+            background-color: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;
+            padding: 6px 12px; border-radius: 6px; font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        .quiz-btn:hover:not(:disabled) { background-color: #c7d2fe; }
+        .quiz-btn.correct { background-color: #16a34a; color: white; border-color: #15803d; }
+        .quiz-btn.incorrect { background-color: #dc2626; color: white; border-color: #b91c1c; }
+        .quiz-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        /* Diagrama interactivo */
+        .diagram-step { cursor: pointer; transition: all 0.2s ease; }
+        .diagram-step:hover { filter: brightness(1.1); }
+        .diagram-step.active { stroke: #fbbf24; stroke-width: 4px; filter: drop-shadow(0 0 8px #f59e0b); }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <header class="p-6 md:p-8 bg-gradient-to-r from-indigo-600 to-blue-500 text-white">
+                <h1 class="text-3xl md:text-4xl font-bold text-center">Guía Completa e Interactiva de Teledetección</h1>
+                <p class="text-center text-indigo-200 mt-2">Una exploración interactiva de los conceptos, herramientas y aplicaciones del sensado remoto.</p>
+            </header>
+            
+            <div class="p-6 md:p-8">
+                <!-- Buscador -->
+                <div class="mb-8">
+                    <div class="relative max-w-lg mx-auto">
+                        <input type="text" id="search-input" placeholder="Buscar en la guía (ej: NDVI, LiDAR, corrección...)" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                        <svg class="h-6 w-6 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Panel de temas principales -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-indigo-50 rounded-lg p-4 h-full">
+                            <h2 class="text-xl font-semibold text-indigo-800 mb-4">Secciones Temáticas</h2>
+                            <ul id="main-topics" class="space-y-2">
+                                <!-- Se llenará con JS -->
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Panel de subtemas y contenido -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                                <!-- Lista de subtemas -->
+                                <div class="md:col-span-4 border-r border-gray-200 pr-4">
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-3" id="subtopics-title">Subtemas</h3>
+                                    <ul id="subtopics-list" class="space-y-1 max-h-[70vh] overflow-y-auto pr-2">
+                                        <!-- Se llenará con JS -->
+                                    </ul>
+                                </div>
+                                
+                                <!-- Contenido detallado -->
+                                <div class="md:col-span-8 pl-4 content-container">
+                                    <div id="detail-container" class="space-y-4">
+                                        <!-- Se llenará con JS -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONTENIDO DE LA GUÍA ---
+        const guideData = {
+            introduccion: {
+                title: "Introducción",
+                icon: "🚀",
+                subtopics: [
+                    {
+                        id: "definicion",
+                        title: "Qué es la Teledetección",
+                        content: `
+                            <h3 class="text-xl font-bold text-indigo-700 mb-3">¿Qué es la Teledetección?</h3>
+                            <div class="flex flex-col md:flex-row items-center gap-6 bg-blue-50 p-4 rounded-lg">
+                                <svg class="w-24 h-24 text-blue-500 flex-shrink-0" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M72.2,22.1c-1.2-1.2-2.8-1.8-4.5-1.8s-3.3,0.6-4.5,1.8L45.4,40H30c-1.7,0-3.3,0.7-4.4,1.8c-2.4,2.5-2.4,6.5,0,9l18,17.4c1.2,1.2,2.8,1.8,4.4,1.8h15.4l17.8-17.8c1.2-1.2,1.8-2.8,1.8-4.5s-0.6-3.3-1.8-4.5L72.2,22.1z" fill="#a3bffa"/><path d="M48.2,65.5L30.3,48.1c-1.2-1.2-1.1-3.1,0.1-4.3c1.2-1.2,3.1-1.1,4.3,0.1l17.9,17.4c1.2,1.2,1.1,3.1-0.1,4.3C51.3,66.7,49.4,66.7,48.2,65.5z" fill="#60a5fa"/><path d="M85.4,29.3l-5.6,5.6c-1.2,1.2-1.2,3.1,0,4.2l5.8,5.8c1.2,1.2,3.1,1.2,4.2,0l5.6-5.6c1.2-1.2,1.2-3.1,0-4.2l-5.8-5.8C88.5,28.1,86.6,28.1,85.4,29.3z" fill="#93c5fd"/><path d="M20,70.7c-2.8,0-5,2.2-5,5v10c0,2.8,2.2,5,5,5h60c2.8,0,5-2.2,5-5v-10c0-2.8-2.2-5-5-5H20z" fill="#3b82f6"/></svg>
+                                <div>
+                                    <p class="mb-2">La <strong>teledetección</strong> (o sensado remoto) es la ciencia y el arte de obtener información sobre un objeto, área o fenómeno a través del análisis de datos adquiridos por un dispositivo que <strong>no está en contacto físico</strong> con él.</p>
+                                    <p>En esencia, es "ver sin tocar", utilizando sensores en satélites, aviones o drones para observar la Tierra desde la distancia.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        id: "historia",
+                        title: "Historia y Evolución",
+                        content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Historia y Evolución</h3><ul class="space-y-3"><li class="p-3 bg-gray-50 rounded-md"><strong>1858:</strong> Gaspard-Félix Tournachon toma la primera fotografía aérea desde un globo aerostático sobre París.</li><li class="p-3 bg-gray-50 rounded-md"><strong>Guerras Mundiales:</strong> Se impulsa el desarrollo de la fotografía aérea para reconocimiento militar.</li><li class="p-3 bg-gray-50 rounded-md"><strong>1972:</strong> Se lanza el satélite <strong>Landsat 1</strong>, marcando el inicio de la era de la observación terrestre sistemática y civil.</li><li class="p-3 bg-gray-50 rounded-md"><strong>Años 90:</strong> Surgen los primeros satélites comerciales de alta resolución espacial.</li><li class="p-3 bg-gray-50 rounded-md"><strong>Siglo XXI:</strong> La era de los datos masivos (Big Data), con constelaciones como Sentinel, la computación en la nube (Google Earth Engine) y la inteligencia artificial para el análisis de imágenes.</li></ul>`
+                    },
+                    {
+                        id: "tipos_activa_pasiva",
+                        title: "Teledetección Activa vs. Pasiva",
+                        content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Teledetección Activa vs. Pasiva</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800 mb-2">Teledetección Pasiva</h4><p class="mb-2">Detecta la energía natural reflejada (luz solar) o emitida (calor) por la superficie terrestre.</p><ul class="list-disc pl-5 text-sm space-y-1"><li><strong>Fuente de energía:</strong> El Sol.</li><li><strong>Ejemplos:</strong> Cámaras fotográficas, sensores multiespectrales (Landsat, Sentinel-2).</li><li><strong>Limitación:</strong> No funciona de noche (excepto sensores térmicos) y es afectada por las nubes.</li></ul></div><div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400"><h4 class="font-bold text-purple-800 mb-2">Teledetección Activa</h4><p class="mb-2">El sensor emite su propia energía (pulsos de radio o láser) y mide la señal que rebota.</p><ul class="list-disc pl-5 text-sm space-y-1"><li><strong>Fuente de energía:</strong> El propio sensor.</li><li><strong>Ejemplos:</strong> Radar (Sentinel-1), LiDAR.</li><li><strong>Ventaja:</strong> Funciona de día y de noche, y puede "ver" a través de las nubes.</li></ul></div></div><div class="mt-6 p-4 bg-blue-50 rounded-lg quiz-container"><p class="font-semibold mb-2">Mini-Quiz: ¿Qué tipo de sensor es?</p><div class="space-y-3"><div><p class="mb-1 text-sm">Un satélite que toma fotos a color de la Tierra durante el día.</p><div class="flex gap-2"><button class="quiz-btn" data-correct="true">Pasivo</button><button class="quiz-btn">Activo</button></div><p class="quiz-feedback hidden mt-1 text-xs"></p></div><div><p class="mb-1 text-sm">Un sistema LiDAR que mapea el relieve del terreno bajo un denso bosque.</p><div class="flex gap-2"><button class="quiz-btn">Pasivo</button><button class="quiz-btn" data-correct="true">Activo</button></div><p class="quiz-feedback hidden mt-1 text-xs"></p></div></div></div>`
+                    }
+                ]
+            },
+            principios: {
+                title: "Principios Físicos",
+                icon: "🔬",
+                subtopics: [
+                    {
+                        id: "espectro",
+                        title: "Espectro Electromagnético",
+                        content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">El Espectro Electromagnético</h3><p class="mb-4">Es el rango de toda la radiación electromagnética. La teledetección utiliza diferentes "ventanas" de este espectro para "ver" distintas propiedades de los objetos.</p><div class="p-4 bg-gray-100 rounded-lg"><div class="h-8 bg-gradient-to-r from-violet-600 via-blue-500 via-green-400 via-yellow-300 via-orange-500 to-red-600 rounded-lg"></div><div class="flex justify-between text-xs mt-1 font-semibold"><span>UV</span><span>Azul</span><span>Verde</span><span>Rojo</span><span>NIR</span><span>SWIR</span><span>Térmico</span></div><p class="text-xs text-center mt-2 text-gray-600">Regiones del espectro más usadas en teledetección óptica.</p></div>`
+                    },
+                    {
+                        id: "firmas_espectrales",
+                        title: "Firmas Espectrales",
+                        content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Firmas Espectrales: La "Huella Dactilar"</h3><p class="mb-4">Cada material (vegetación, agua, suelo, etc.) refleja y absorbe la energía de manera única a lo largo del espectro. Este patrón se llama <strong>firma espectral</strong> y es lo que nos permite identificar y diferenciar coberturas.</p><div class="bg-gray-50 p-4 rounded-lg"><canvas id="spectralChart"></canvas></div>`
+                    },
+                    {
+                        id: "resoluciones",
+                        title: "Las 4 Resoluciones",
+                        content: `
+                            <h3 class="text-xl font-bold text-indigo-700 mb-3">Las 4 Resoluciones Clave</h3>
+                            <p class="mb-4">La calidad de una imagen de teledetección se define por cuatro tipos de resolución. Siempre existe un compromiso entre ellas.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div class="p-3 bg-blue-50 rounded-lg"><strong class="text-blue-800">1. Espacial:</strong> El nivel de detalle (tamaño del píxel).</div>
+                                <div class="p-3 bg-green-50 rounded-lg"><strong class="text-green-800">2. Espectral:</strong> El número y tipo de "colores" (bandas).</div>
+                                <div class="p-3 bg-red-50 rounded-lg"><strong class="text-red-800">3. Temporal:</strong> La frecuencia de revisita.</div>
+                                <div class="p-3 bg-yellow-50 rounded-lg"><strong class="text-yellow-800">4. Radiométrica:</strong> La sensibilidad a la intensidad.</div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-center mb-2">Comparador de Satélites</h4>
+                                <canvas id="resolutionRadarChart"></canvas>
+                                <div class="text-center mt-4">
+                                    <select id="satelliteSelector" class="p-2 border rounded-md">
+                                        <option value="landsat">Landsat 8</option>
+                                        <option value="sentinel">Sentinel-2</option>
+                                        <option value="worldview">WorldView-3</option>
+                                    </select>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            plataformas_sensores: {
+                title: "Plataformas y Sensores",
+                icon: "🛰️",
+                subtopics: [
+                    {
+                        id: "plataformas",
+                        title: "Plataformas",
+                        content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Plataformas: Los Vehículos de la Teledetección</h3><p class="mb-4">Son los vehículos que transportan los sensores.</p><div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center"><div class="p-4 bg-purple-50 rounded-lg"><svg class="w-16 h-16 mx-auto text-purple-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001.35c-1.123 0-2.14.46-2.883 1.22l-2.5 2.56a2.03 2.03 0 000 2.83l8.84 8.84a2.03 2.03 0 002.83 0l2.5-2.56a4.05 4.05 0 00-1.22-5.71L12 .35zM4.771 9.91L2.21 7.35a4.05 4.05 0 00-1.22 5.71l2.5 2.56a2.03 2.03 0 002.83 0l1.41-1.42-2.96-2.95zM19.791 14.09l2.56 2.5a4.05 4.05 0 01-5.71 1.22l-2.56-2.5a2.03 2.03 0 010-2.83l2.88-2.88 2.83 2.83z"/></svg><h4 class="font-semibold mt-2">Satélites</h4><p class="text-xs">Cobertura global, ideal para monitoreo a largo plazo.</p></div><div class="p-4 bg-green-50 rounded-lg"><svg class="w-16 h-16 mx-auto text-green-500" viewBox="0 0 24 24" fill="currentColor"><path d="M20.998 8.837a3.06 3.06 0 00-4.94-3.18l-5.63 2.41a3.03 3.03 0 00-1.39-1.39L6.627 1.05a3.06 3.06 0 00-4.94 3.18l2.41 5.63c.48 1.12.48 2.37 0 3.49l-2.41 5.63a3.06 3.06 0 004.94 3.18l5.63-2.41c1.12-.48 2.37-.48 3.49 0l5.63 2.41a3.06 3.06 0 004.94-3.18l-2.41-5.63a3.03 3.03 0 000-3.49l2.41-5.63z"/></svg><h4 class="font-semibold mt-2">Aeronaves</h4><p class="text-xs">Alta flexibilidad y resolución para áreas específicas.</p></div><div class="p-4 bg-yellow-50 rounded-lg"><svg class="w-16 h-16 mx-auto text-yellow-500" viewBox="0 0 24 24" fill="currentColor"><path d="M19.498 7.502a2.002 2.002 0 00-2-2h-3.33a2 2 0 00-3.83.67 4.5 4.5 0 00-6.34 6.34 2 2 0 00-.67 3.83v3.33a2 2 0 002 2h3.33a2 2 0 003.83-.67 4.5 4.5 0 006.34-6.34 2 2 0 00.67-3.83v-3.33z"/></svg><h4 class="font-semibold mt-2">Drones (UAVs)</h4><p class="text-xs">Resolución ultra-alta para aplicaciones locales y de precisión.</p></div></div>`
+                    },
+                    {
+                        id: "tipos_sensores",
+                        title: "Tipos de Sensores",
+                        content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Principales Tipos de Sensores</h3><div class="space-y-4"><div class="p-4 bg-gray-100 rounded-lg"><h4 class="font-semibold">Sensores Pancromáticos</h4><p class="text-sm">Capturan una sola banda ancha en el espectro visible (blanco y negro), ofreciendo la máxima resolución espacial.</p></div><div class="p-4 bg-gray-100 rounded-lg"><h4 class="font-semibold">Sensores Multiespectrales</h4><p class="text-sm">Capturan varias bandas espectrales (típicamente de 4 a 20) en diferentes regiones (visible, NIR, SWIR). Son los más comunes (Ej: Landsat, Sentinel-2).</p></div><div class="p-4 bg-gray-100 rounded-lg"><h4 class="font-semibold">Sensores Hiperespectrales</h4><p class="text-sm">Capturan cientos de bandas espectrales contiguas y muy estrechas. Permiten un análisis químico detallado de los materiales.</p></div></div>`
+                    },
+                    {
+                        id: "radar_lidar",
+                        title: "Radar y LiDAR",
+                        content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Tecnologías Activas: Radar y LiDAR</h3><div class="space-y-6"><div class="p-4 bg-blue-50 rounded-lg"><h4 class="font-bold text-blue-800">Radar (Radio Detection and Ranging)</h4><p class="text-sm">Emite microondas y analiza la señal de retorno (retrodispersión). Es sensible a la rugosidad, estructura y humedad de la superficie. Su gran ventaja es que puede penetrar nubes, polvo y lluvia ligera.</p></div><div class="p-4 bg-green-50 rounded-lg"><h4 class="font-bold text-green-800">LiDAR (Light Detection and Ranging)</h4><p class="text-sm">Emite pulsos de luz láser y mide el tiempo de retorno para crear nubes de puntos 3D de alta precisión. Es ideal para generar modelos de elevación detallados y analizar la estructura de la vegetación, ya que el láser puede penetrar el dosel arbóreo.</p></div></div>`
+                    }
+                ]
+            },
+            flujo_trabajo: {
+                title: "Flujo de Trabajo",
+                icon: "📊",
+                subtopics: [
+                    {
+                        id: "diagrama_flujo",
+                        title: "Proceso Típico",
+                        content: `
+                            <h3 class="text-xl font-bold text-indigo-700 mb-3">Flujo de Trabajo en Teledetección</h3>
+                            <p class="mb-4">Un proyecto de teledetección sigue una serie de pasos lógicos, desde la pregunta inicial hasta el producto final. Haz clic en cada paso del diagrama para saber más.</p>
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <svg id="workflowDiagram" class="w-full" viewBox="0 0 800 300">
+                                    <!-- Pasos -->
+                                    <g id="step1" class="diagram-step"><rect x="25" y="100" width="120" height="100" rx="10" fill="#ede9fe"/><text x="85" y="145" text-anchor="middle" font-size="14" font-weight="bold">Adquisición</text><text x="85" y="165" text-anchor="middle" font-size="12">de Datos</text></g>
+                                    <g id="step2" class="diagram-step"><rect x="185" y="100" width="120" height="100" rx="10" fill="#dbeafe"/><text x="245" y="145" text-anchor="middle" font-size="14" font-weight="bold">Preprocesado</text><text x="245" y="165" text-anchor="middle" font-size="12">(Correcciones)</text></g>
+                                    <g id="step3" class="diagram-step"><rect x="345" y="100" width="120" height="100" rx="10" fill="#dcfce7"/><text x="405" y="145" text-anchor="middle" font-size="14" font-weight="bold">Análisis</text><text x="405" y="165" text-anchor="middle" font-size="12">y Extracción</text></g>
+                                    <g id="step4" class="diagram-step"><rect x="505" y="100" width="120" height="100" rx="10" fill="#fef9c3"/><text x="565" y="145" text-anchor="middle" font-size="14" font-weight="bold">Validación</text><text x="565" y="165" text-anchor="middle" font-size="12">(Accuracy)</text></g>
+                                    <g id="step5" class="diagram-step"><rect x="655" y="100" width="120" height="100" rx="10" fill="#fee2e2"/><text x="715" y="145" text-anchor="middle" font-size="14" font-weight="bold">Presentación</g>
+                                    <!-- Flechas -->
+                                    <path d="M 145 150 h 40" stroke="#a78bfa" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                                    <path d="M 305 150 h 40" stroke="#93c5fd" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                                    <path d="M 465 150 h 40" stroke="#86efac" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                                    <path d="M 625 150 h 40" stroke="#fef08a" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                                    <defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#4b5563"/></marker></defs>
+                                </svg>
+                                <div id="workflowDescription" class="mt-4 p-4 bg-white rounded-md border h-28">
+                                    <p class="text-sm text-gray-600">Haz clic en un paso para ver su descripción.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        id: "indices",
+                        title: "Índices Espectrales",
+                        content: `
+                            <h3 class="text-xl font-bold text-indigo-700 mb-3">Simulador de Índices Espectrales</h3>
+                            <p class="mb-4">Experimenta cómo los cambios en la reflectancia de las bandas afectan el valor del NDVI, el índice de vegetación más común.</p>
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                    <div class="col-span-1 md:col-span-2 space-y-4">
+                                        <div>
+                                            <label for="nirSlider" class="block text-sm font-medium text-gray-700">Infrarrojo Cercano (NIR): <span id="nirValue" class="font-bold">0.5</span></label>
+                                            <input type="range" id="nirSlider" min="0.01" max="0.8" value="0.5" step="0.01" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                        </div>
+                                        <div>
+                                            <label for="redSlider" class="block text-sm font-medium text-gray-700">Rojo: <span id="redValue" class="font-bold">0.08</span></label>
+                                            <input type="range" id="redSlider" min="0.01" max="0.4" value="0.08" step="0.01" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                        </div>
+                                    </div>
+                                    <div class="col-span-1 text-center p-4 rounded-lg" id="ndviResultBox">
+                                        <p class="text-sm font-semibold">NDVI</p>
+                                        <p class="text-4xl font-bold" id="ndviResultValue">0.72</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            aplicaciones: {
+                title: "Aplicaciones",
+                icon: "🌍",
+                subtopics: [
+                    { id: "agricultura", title: "Agricultura de Precisión", content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Agricultura de Precisión</h3><p class="mb-4">Optimizar la gestión de cultivos para aumentar la productividad y sostenibilidad.</p><div class="space-y-3"><div class="p-3 bg-green-50 rounded-lg"><strong>Monitoreo de Salud:</strong> Detectar estrés por plagas o sequía usando el NDVI.</div><div class="p-3 bg-green-50 rounded-lg"><strong>Gestión de Riego:</strong> Aplicar agua de forma eficiente según las necesidades de cada zona.</div><div class="p-3 bg-green-50 rounded-lg"><strong>Estimación de Cosechas:</strong> Predecir el rendimiento antes de la recolección.</div></div>` },
+                    { id: "forestal", title: "Gestión Forestal", content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Gestión Forestal</h3><p class="mb-4">Monitorear y gestionar los recursos forestales del planeta.</p><div class="space-y-3"><div class="p-3 bg-emerald-50 rounded-lg"><strong>Detección de Deforestación:</strong> Cuantificar la pérdida de bosques en tiempo casi real.</div><div class="p-3 bg-emerald-50 rounded-lg"><strong>Gestión de Incendios:</strong> Identificar focos activos, mapear áreas quemadas y evaluar el riesgo.</div><div class="p-3 bg-emerald-50 rounded-lg"><strong>Inventario Forestal:</strong> Estimar la biomasa y el carbono almacenado con LiDAR y Radar.</div></div>` },
+                    { id: "urbanismo", title: "Planificación Urbana", content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Planificación Urbana</h3><p class="mb-4">Analizar el crecimiento de las ciudades y planificar un desarrollo más sostenible.</p><div class="space-y-3"><div class="p-3 bg-gray-100 rounded-lg"><strong>Análisis de Expansión:</strong> Medir cómo crecen las ciudades y su impacto en el entorno.</div><div class="p-3 bg-gray-100 rounded-lg"><strong>Islas de Calor:</strong> Mapear zonas con temperaturas más altas dentro de las ciudades con sensores térmicos.</div><div class="p-3 bg-gray-100 rounded-lg"><strong>Modelado 3D:</strong> Crear "gemelos digitales" de ciudades con datos LiDAR para simulaciones.</div></div>` },
+                    { id: "desastres", title: "Gestión de Desastres", content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Gestión de Desastres</h3><p class="mb-4">Una herramienta vital para todo el ciclo de un desastre: antes, durante y después.</p><div class="space-y-3"><div class="p-3 bg-yellow-50 rounded-lg"><strong>Prevención:</strong> Crear mapas de riesgo de inundaciones o deslizamientos.</div><div class="p-3 bg-red-50 rounded-lg"><strong>Respuesta:</strong> Mapear la extensión de un desastre en curso (con Radar) para guiar a los rescatistas.</div><div class="p-3 bg-blue-50 rounded-lg"><strong>Recuperación:</strong> Evaluar los daños a infraestructuras y planificar la reconstrucción.</div></div>` }
+                ]
+            },
+            herramientas: {
+                title: "Herramientas",
+                icon: "🛠️",
+                subtopics: [
+                    {
+                        id: "software",
+                        title: "Software y Plataformas",
+                        content: `<h3 class="text-xl font-bold text-indigo-700 mb-3">Software y Plataformas Populares</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><h4 class="text-lg font-semibold text-green-700 mb-2">Código Abierto (Gratuito)</h4><ul class="space-y-3"><li class="p-3 bg-green-50 rounded-md"><strong>QGIS:</strong> El SIG de escritorio de código abierto más popular, con potentes herramientas de procesamiento.</li><li class="p-3 bg-green-50 rounded-md"><strong>ESA SNAP:</strong> Software de la Agencia Espacial Europea, optimizado para trabajar con datos Sentinel.</li><li class="p-3 bg-green-50 rounded-md"><strong>Google Earth Engine:</strong> Plataforma en la nube para análisis a escala planetaria con un inmenso catálogo de datos listos para usar.</li></ul></div><div><h4 class="text-lg font-semibold text-blue-700 mb-2">Comercial</h4><ul class="space-y-3"><li class="p-3 bg-blue-50 rounded-md"><strong>ArcGIS (Esri):</strong> El estándar de la industria en SIG, con un ecosistema completo para análisis de imágenes.</li><li class="p-3 bg-blue-50 rounded-md"><strong>ENVI:</strong> Software especializado en análisis espectral avanzado, especialmente para datos hiperespectrales.</li><li class="p-3 bg-blue-50 rounded-md"><strong>ERDAS IMAGINE:</strong> Una suite robusta enfocada en la producción de información geoespacial a partir de imágenes.</li></ul></div></div>`
+                    }
+                ]
+            }
+        };
+
+        // --- LÓGICA DE LA APLICACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainTopicsList = document.getElementById('main-topics');
+            const subtopicsList = document.getElementById('subtopics-list');
+            const subtopicsTitle = document.getElementById('subtopics-title');
+            const detailContainer = document.getElementById('detail-container');
+            const searchInput = document.getElementById('search-input');
+            
+            let currentTopicKey = Object.keys(guideData)[0];
+
+            function renderMainTopics() {
+                mainTopicsList.innerHTML = '';
+                Object.keys(guideData).forEach(key => {
+                    const topic = guideData[key];
+                    const li = document.createElement('li');
+                    li.innerHTML = `<button class="topic-btn w-full text-left px-4 py-3 rounded-lg flex items-center transition" data-topic-key="${key}"><span class="text-2xl mr-3">${topic.icon}</span><span class="font-semibold">${topic.title}</span></button>`;
+                    mainTopicsList.appendChild(li);
+                });
+            }
+
+            function updateActiveStyles(topicKey, subtopicId) {
+                document.querySelectorAll('.topic-btn').forEach(btn => btn.dataset.topicKey === topicKey ? btn.classList.add('bg-indigo-600', 'text-white') : btn.classList.remove('bg-indigo-600', 'text-white'));
+                document.querySelectorAll('.subtopic-item').forEach(item => item.dataset.subtopic === subtopicId ? item.classList.add('bg-indigo-100', 'font-semibold', 'text-indigo-800') : item.classList.remove('bg-indigo-100', 'font-semibold', 'text-indigo-800'));
+            }
+            
+            function showDetail(topicKey, subtopicId) {
+                document.querySelectorAll('.detail-content').forEach(d => d.classList.remove('active'));
+                const detailEl = document.getElementById(`detail-${topicKey}-${subtopicId}`);
+                if (detailEl) {
+                    detailEl.classList.add('active');
+                    initInteractiveElements(detailEl);
+                }
+                updateActiveStyles(topicKey, subtopicId);
+                document.querySelector('.content-container').scrollTop = 0;
+            }
+
+            function renderSubtopicsAndDetails(topicKey, searchResults = null) {
+                let subtopicsToShow;
+                if(searchResults) {
+                    subtopicsTitle.textContent = 'Resultados de Búsqueda';
+                    subtopicsToShow = searchResults;
+                } else {
+                    currentTopicKey = topicKey;
+                    subtopicsTitle.textContent = guideData[topicKey].title;
+                    subtopicsToShow = guideData[topicKey].subtopics.map(sub => ({ ...sub, topicKey: topicKey }));
+                }
+
+                subtopicsList.innerHTML = '';
+                detailContainer.innerHTML = '';
+
+                if (subtopicsToShow.length === 0) {
+                     subtopicsList.innerHTML = `<li class="text-sm text-gray-500 p-2">No se encontraron resultados.</li>`;
+                     return;
+                }
+
+                subtopicsToShow.forEach(sub => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<button class="subtopic-item w-full text-left p-2 rounded-md text-sm" data-subtopic="${sub.id}" data-topic-key="${sub.topicKey}">${sub.title}</button>`;
+                    subtopicsList.appendChild(li);
+                    const detailDiv = document.createElement('div');
+                    detailDiv.id = `detail-${sub.topicKey}-${sub.id}`;
+                    detailDiv.className = 'detail-content';
+                    detailDiv.innerHTML = sub.content;
+                    detailContainer.appendChild(detailDiv);
+                });
+                
+                showDetail(subtopicsToShow[0].topicKey, subtopicsToShow[0].id);
+            }
+
+            mainTopicsList.addEventListener('click', e => {
+                const button = e.target.closest('.topic-btn');
+                if (button) {
+                    searchInput.value = '';
+                    renderSubtopicsAndDetails(button.dataset.topicKey);
+                }
+            });
+
+            subtopicsList.addEventListener('click', e => {
+                const button = e.target.closest('.subtopic-item');
+                if(button) {
+                    showDetail(button.dataset.topicKey, button.dataset.subtopic);
+                }
+            });
+
+            searchInput.addEventListener('input', e => {
+                const term = e.target.value.toLowerCase().trim();
+                if (term.length < 3) {
+                    if (term.length === 0) renderSubtopicsAndDetails(currentTopicKey);
+                    return;
+                }
+                const results = [];
+                Object.keys(guideData).forEach(key => {
+                    guideData[key].subtopics.forEach(sub => {
+                        if (sub.title.toLowerCase().includes(term) || sub.content.toLowerCase().includes(term)) {
+                            results.push({ ...sub, topicKey: key });
+                        }
+                    });
+                });
+                renderSubtopicsAndDetails(null, results);
+            });
+            
+            renderMainTopics();
+            renderSubtopicsAndDetails(currentTopicKey);
+        });
+
+        // --- INICIALIZADOR DE ELEMENTOS INTERACTIVOS ---
+        function initInteractiveElements(container) {
+            // Chart.js: Firmas espectrales
+            const spectralChartCanvas = container.querySelector('#spectralChart');
+            if (spectralChartCanvas) {
+                new Chart(spectralChartCanvas, {
+                    type: 'line', data: {
+                        labels: ['Azul', 'Verde', 'Rojo', 'NIR', 'SWIR 1', 'SWIR 2'],
+                        datasets: [
+                            { label: 'Vegetación', data: [0.05, 0.1, 0.08, 0.5, 0.3, 0.15], borderColor: '#22c55e', tension: 0.1, fill: false },
+                            { label: 'Agua', data: [0.1, 0.08, 0.05, 0.02, 0.01, 0.0], borderColor: '#3b82f6', tension: 0.1, fill: false },
+                            { label: 'Suelo', data: [0.1, 0.15, 0.2, 0.25, 0.35, 0.4], borderColor: '#a16207', tension: 0.1, fill: false }
+                        ]
+                    }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: 'Reflectancia' } } } }
+                });
+            }
+
+            // Quizzes
+            container.querySelectorAll('.quiz-container .quiz-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    const parentDiv = e.target.parentElement;
+                    const feedbackEl = parentDiv.nextElementSibling;
+                    parentDiv.querySelectorAll('.quiz-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') { b.classList.add('correct'); }
+                    });
+                    if (e.target.dataset.correct !== 'true') { e.target.classList.add('incorrect'); }
+                    feedbackEl.textContent = e.target.dataset.correct === 'true' ? '¡Correcto!' : 'Respuesta incorrecta.';
+                    feedbackEl.className = `quiz-feedback mt-1 text-xs ${e.target.dataset.correct === 'true' ? 'text-green-600' : 'text-red-600'}`;
+                };
+            });
+
+            // Chart.js: Radar de Resoluciones
+            const radarCanvas = container.querySelector('#resolutionRadarChart');
+            if (radarCanvas) {
+                const satelliteData = {
+                    landsat: { label: 'Landsat 8', data: [3, 7, 2, 8] },
+                    sentinel: { label: 'Sentinel-2', data: [8, 8, 8, 8] },
+                    worldview: { label: 'WorldView-3', data: [10, 9, 9, 7] }
+                };
+                const radarChart = new Chart(radarCanvas, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Resol. Espacial', 'Resol. Espectral', 'Resol. Temporal', 'Resol. Radiométrica'],
+                        datasets: [{
+                            label: satelliteData.landsat.label,
+                            data: satelliteData.landsat.data,
+                            fill: true, backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgb(54, 162, 235)', pointBackgroundColor: 'rgb(54, 162, 235)'
+                        }]
+                    },
+                    options: { scales: { r: { beginAtZero: true, max: 10, ticks: { display: false } } }, responsive: true }
+                });
+                container.querySelector('#satelliteSelector').onchange = (e) => {
+                    const selected = e.target.value;
+                    radarChart.data.datasets[0].label = satelliteData[selected].label;
+                    radarChart.data.datasets[0].data = satelliteData[selected].data;
+                    radarChart.update();
+                };
+            }
+
+            // Diagrama de Flujo de Trabajo
+            const workflowDiagram = container.querySelector('#workflowDiagram');
+            if (workflowDiagram) {
+                const steps = workflowDiagram.querySelectorAll('.diagram-step');
+                const descriptionEl = container.querySelector('#workflowDescription');
+                const descriptions = {
+                    step1: "<strong>1. Adquisición de Datos:</strong> Se define el área de estudio y se seleccionan las imágenes satelitales adecuadas (o se planifica un vuelo de dron/avión) según la resolución y fechas necesarias.",
+                    step2: "<strong>2. Preprocesado:</strong> Es la 'limpieza' de los datos. Incluye correcciones radiométricas (del sensor) y atmosféricas (de la atmósfera) para obtener la reflectancia real de la superficie.",
+                    step3: "<strong>3. Análisis y Extracción:</strong> Aquí ocurre la 'magia'. Se aplican técnicas como el cálculo de índices (NDVI), clasificaciones de cobertura del suelo, o detección de cambios para extraer la información deseada.",
+                    step4: "<strong>4. Validación:</strong> Se comprueba la precisión de los resultados. Por ejemplo, se comparan los resultados de una clasificación con puntos de verdad terreno tomados en campo (muestreo).",
+                    step5: "<strong>5. Presentación:</strong> Los resultados se presentan en formatos útiles, como mapas temáticos, informes, gráficos o visores web interactivos para la toma de decisiones."
+                };
+                steps.forEach(step => {
+                    step.onclick = () => {
+                        steps.forEach(s => s.classList.remove('active'));
+                        step.classList.add('active');
+                        descriptionEl.innerHTML = `<p class="text-sm">${descriptions[step.id]}</p>`;
+                    }
+                });
+            }
+            
+            // Simulador NDVI
+            const nirSlider = container.querySelector('#nirSlider');
+            if(nirSlider){
+                const redSlider = container.querySelector('#redSlider');
+                const nirValueEl = container.querySelector('#nirValue');
+                const redValueEl = container.querySelector('#redValue');
+                const ndviResultEl = container.querySelector('#ndviResultValue');
+                const ndviBoxEl = container.querySelector('#ndviResultBox');
+                
+                const updateNDVI = () => {
+                    const nir = parseFloat(nirSlider.value);
+                    const red = parseFloat(redSlider.value);
+                    const ndvi = (nir - red) / (nir + red);
+                    
+                    nirValueEl.textContent = nir.toFixed(2);
+                    redValueEl.textContent = red.toFixed(2);
+                    ndviResultEl.textContent = ndvi.toFixed(2);
+                    
+                    if(ndvi < 0.1) ndviBoxEl.style.backgroundColor = '#a5f3fc'; // Agua
+                    else if(ndvi < 0.3) ndviBoxEl.style.backgroundColor = '#fde68a'; // Suelo/Vegetación estresada
+                    else if(ndvi < 0.6) ndviBoxEl.style.backgroundColor = '#bbf7d0'; // Vegetación moderada
+                    else ndviBoxEl.style.backgroundColor = '#4ade80'; // Vegetación densa
+                };
+                
+                nirSlider.addEventListener('input', updateNDVI);
+                redSlider.addEventListener('input', updateNDVI);
+            }
+        }
+    </script>
+</body>
+</html>
