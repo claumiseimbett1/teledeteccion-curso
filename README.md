@@ -2,13 +2,13 @@
 
 *Transforma datos espaciales remotos en decisiones inteligentes* 🌱
 
-> **📚 Curso dictado en la Universidad de Magdalena** para los programas de **Maestría y Doctorado en Ingeniería** en alianza con **AGROSAVIA - Colombia** 🇨🇴
+> **📚 Curso dictado en la Universidad de Magdalena** para los programas de **Maestría y Doctorado en Ingeniería**  y para **AGROSAVIA - Colombia** 
 
-Este repositorio contiene los materiales, ejemplos y recursos del curso especializado en **Teledetección** con énfasis en aplicaciones agrícolas y uso de inteligencia artificial.
+Este repositorio contiene los materiales, ejemplos y recursos del curso especializado en **Teledetección (Sensores Remotos)** con énfasis en aplicaciones agrícolas y uso de inteligencia artificial.
 
 ## 🎯 Descripción
 
-Curso de formación avanzada en teledetección óptica y radar, con énfasis en imágenes multiespectrales y algoritmos de machine learning. Integra radiometría de campo, preprocesamiento digital y clasificación supervisada para implementar soluciones reales en agricultura de precisión usando herramientas de software libre.
+Curso de formación avanzada en teledetección óptica y radar, con énfasis en imágenes multiespectrales y algoritmos de machine learning. Integra radiometría de campo, preprocesamiento digital y clasificación supervisada para implementar soluciones reales en agricultura de precisión usando herramientas de software libre como QGIS, SNAP y Python.
 
 **Entidad organizadora:** AGROSAVIA – Centro de Investigación Turipaná
 
